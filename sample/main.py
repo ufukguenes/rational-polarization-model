@@ -26,7 +26,7 @@ if __name__ == '__main__':
     for i in range(number_of_agents):
         arguments_of_one = []
 
-        # todo bei unlimeted memory, hat jeder dann alle argumente?
+        # TODO bei unlimeted memory, hat jeder dann alle argumente?
         '''
         for k in range(size_of_memory):
             random_index = random.randint(0, size_of_argument_pool - 1)

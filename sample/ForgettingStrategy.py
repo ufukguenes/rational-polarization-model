@@ -4,7 +4,6 @@ This module includes forgetting strategies
 import random
 
 
-
 def simple_minded(agent, new_argument, new_argument_index):
     """
     simple minded forgetting-strategy
