@@ -9,7 +9,7 @@ import MeasuringMethods as mes
 
 number_of_steps = 100000  # 100.000 in paper
 plot_every_n_steps = 10000
-plot_when_in = [0, 5, 10, 50, 100, 250, 500, 1000, 10000, 25000, 50000, number_of_steps - 1]
+plot_when_in = [0, 5, 10, 50, 100, 250, 500, 1000, 2500, 5000, 7500, 10000, 25000, 50000, number_of_steps - 1]
 
 size_of_argument_pool = 500  # 500 in paper
 
@@ -53,9 +53,10 @@ def init(num_steps, num_arguments, num_agents, size_memory, distribution, forget
     # je ein Schritt der Simulation
     std = []
     steps = []
+    number_of_groups = []
     subgroup_divergence = []
     subgroup_consensus = []
-    relative_subgroup_size_diff = []
+    relative_subgroup_size = []
     time_to_polarize_average = [0, 0]
     time_to_polarize_reasons = [0, 0]
     converged_average = False
@@ -70,9 +71,9 @@ def init(num_steps, num_arguments, num_agents, size_memory, distribution, forget
             mes.opinion_of_each_agent(agents, i)
             plt.show()
 
-            subgroup_divergence.append(mes.subgroup_divergence(agents))
+            subgroup_divergence.append(mes.subgroup_divergence_for_two_groups(agents))
             subgroup_consensus.append(mes.subgroup_consensus(agents))
-            relative_subgroup_size_diff.append(mes.relative_subgroup_size_differnece(agents))
+            relative_subgroup_size.append(mes.relative_subgroup_size(agents))
             steps.append(i)
 
             if converged_average:
@@ -91,15 +92,54 @@ def init(num_steps, num_arguments, num_agents, size_memory, distribution, forget
             else:
                 time_to_polarize_reasons[0] = i
 
-    plt.plot(steps, subgroup_consensus, label='consensus')
-    plt.plot(steps, subgroup_divergence, label='divergence')
-    plt.plot(steps, relative_subgroup_size_diff, label='subgroup_size')
+            average = mes.get_average_opinions(agents)
+            groups_opinion, groups_agent_index = mes.get_groups(average)
+
+            number_of_groups.append(len(groups_opinion))
+
+            group_avg = []
+            group_std = []
+            for group in groups_opinion:
+                group_avg.append(np.average(group))
+                group_std.append(np.std(group))
+
+            if converged_average and converged_reasons:
+                break
+
+    print("Time to polarize average: ", time_to_polarize_average)
+    print("Time to polarize reasons: ", time_to_polarize_reasons)
+
+    subgroup_consensus_avg = list(map(np.average, subgroup_consensus))
+    plt.plot(steps, subgroup_consensus_avg, label='average subgroup consensus', marker="o")
+    plt.plot(steps, subgroup_divergence, label='subgroup divergence for two groups', marker="o")
+    plt.plot(steps, number_of_groups, label='number of groups', marker="o")
     plt.xlabel("num of steps")
     plt.legend()
     plt.show()
 
-    print("Time to polarize average: ", time_to_polarize_average)
-    print("Time to polarize reasons: ", time_to_polarize_reasons)
+    max_num_of_groups = max(map(len, relative_subgroup_size))
+    for i in range(len(relative_subgroup_size)):
+        while len(relative_subgroup_size[i]) < max_num_of_groups:
+            relative_subgroup_size[i].append(0)
+
+    transposed = np.transpose(relative_subgroup_size)
+    for group in transposed:
+        plt.plot(steps, group, label='subgroup_size', marker="o")
+    plt.xlabel("num of steps")
+    plt.show()
+
+
+def transpose(l1, l2):
+    # iterate over list l1 to the length of an item
+    for i in range(len(l1[0])):
+        # print(i)
+        row = []
+        for item in l1:
+            # appending to new list with values and index positions
+            # i contains index position and item contains values
+            row.append(item[i])
+        l2.append(row)
+    return l2
 
 
 if __name__ == '__main__':
