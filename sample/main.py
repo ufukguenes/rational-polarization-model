@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
 
 import ForgettingStrategy as forg
 import DeliberationStrategy as delib
@@ -8,22 +9,24 @@ import MeasuringMethods as mes
 
 number_of_steps = 100000  # 100.000 in paper
 plot_every_n_steps = 10000
-plot_when_in = [0, 5, 10, 50, 100, 250, 500, 1000, 10000, 25000, 50000, number_of_steps-1]
+plot_when_in = [0, 5, 10, 50, 100, 250, 500, 1000, 10000, 25000, 50000, number_of_steps - 1]
 
-argument_pool = []  # 500 in paper
 size_of_argument_pool = 500  # 500 in paper
 
 scale_parameter_exp_distri = 1  # 1 in paper
 
 number_of_agents = 50  # 50 in paper
 size_of_memory = 7  # 7 or unlimited in paper
-agents = []
 
-if __name__ == '__main__':
-    argument_pool = argp.exponential_distribution_pool(scale_parameter_exp_distri, size_of_argument_pool)
+
+def init(num_steps, num_arguments, num_agents, size_memory, distribution, forgetting, deliberation):
+    # init all the available arguments
+    argument_pool = distribution(size_of_argument_pool)
+
+    agents = []
 
     # give each agent random arguments
-    for i in range(number_of_agents):
+    for i in range(num_agents):
         arguments_of_one = []
 
         # TODO bei unlimeted memory, hat jeder dann alle argumente?
@@ -34,8 +37,8 @@ if __name__ == '__main__':
             arguments_of_one.append((random_index, next_argument))
         '''
 
-        # permutiere alle indizes der Argumente, um die ersten size_of_memory vielen indizes herrauszunehmen.
-        random_indices_permutation = np.random.permutation(size_of_argument_pool)
+        # permutiere alle indizes der Argumente, um die ersten size_memory vielen indizes herrauszunehmen.
+        random_indices_permutation = np.random.permutation(num_arguments)
         indices_to_take = list(range(0, size_of_memory))
         indices_of_one = np.take(random_indices_permutation, indices_to_take).tolist()
 
@@ -48,15 +51,58 @@ if __name__ == '__main__':
         agents.append(argument_dictionary)
 
     # je ein Schritt der Simulation
-    for i in range(number_of_steps):
+    std = []
+    steps = []
+    subgroup_divergence = []
+    subgroup_consensus = []
+    relative_subgroup_size_diff = []
+    time_to_polarize_average = [0, 0]
+    time_to_polarize_reasons = [0, 0]
+    converged_average = False
+    converged_reasons = False
+    for i in range(num_steps):
         # hier wird die deliberation-Strategie und die Vergessens-Strategie angewandt
-        delib.outside_deliberation(agents, argument_pool, forg.coherence_minded)
+        deliberation(agents, argument_pool, forgetting)
 
         # Ergebnisse plotten
         if i % plot_every_n_steps == 0 or i in plot_when_in:
-            average = mes.opinion_of_each_agent(agents)
-            plt.hist(average)
-            plt.title("after " + str(i) + " steps")
-            plt.xlabel("opinion")
-            plt.ylabel("number of agents")
+
+            mes.opinion_of_each_agent(agents, i)
             plt.show()
+
+            subgroup_divergence.append(mes.subgroup_divergence(agents))
+            subgroup_consensus.append(mes.subgroup_consensus(agents))
+            relative_subgroup_size_diff.append(mes.relative_subgroup_size_differnece(agents))
+            steps.append(i)
+
+            if converged_average:
+                continue
+            elif mes.is_converged_average(agents):
+                time_to_polarize_average[1] = i
+                converged_average = True
+            else:
+                time_to_polarize_average[0] = i
+
+            if converged_reasons:
+                continue
+            elif mes.is_converged_reasons(agents):
+                time_to_polarize_reasons[1] = i
+                converged_reasons = True
+            else:
+                time_to_polarize_reasons[0] = i
+
+    plt.plot(steps, subgroup_consensus, label='consensus')
+    plt.plot(steps, subgroup_divergence, label='divergence')
+    plt.plot(steps, relative_subgroup_size_diff, label='subgroup_size')
+    plt.xlabel("num of steps")
+    plt.legend()
+    plt.show()
+
+    print("Time to polarize average: ", time_to_polarize_average)
+    print("Time to polarize reasons: ", time_to_polarize_reasons)
+
+
+if __name__ == '__main__':
+    init(number_of_steps, size_of_argument_pool, number_of_agents, size_of_memory,
+         argp.exponential_distribution_pool, forg.coherence_minded,
+         delib.outside_deliberation)

@@ -5,11 +5,12 @@ call the forgetting strategies
 import random
 
 
-def pure_deliberation(agents, forgetting_strategy):
+def pure_deliberation(agents, argument_pool, forgetting_strategy):
     """
     group interaction method based on pure deliberation
 
     :param agents: the agents which are together in a discussion
+    :param argument_pool: the pool of arguments from which an outside argument will be chosen
     :param forgetting_strategy: the strategy which will be used for forgetting
     :return: no returns, just side effects
     """
@@ -52,7 +53,7 @@ def outside_deliberation(agents, argument_pool, forgetting_strategy):
         forgetting_strategy(agents[i], new_arguments[i], new_argument_indices[i])
 
     # second pure deliberation is applied
-    pure_deliberation(agents, forgetting_strategy)
+    pure_deliberation(agents, argument_pool, forgetting_strategy)
 
     '''
     wenn ein agent eine argument bekommt, dass er noch nicht kennt, erhöht sich die anzahl seiner argumente.

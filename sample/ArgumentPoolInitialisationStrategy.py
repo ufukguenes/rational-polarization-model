@@ -5,7 +5,7 @@ import random
 import numpy as np
 
 
-def exponential_distribution_pool(scale_parameter, number_of_arguments):
+def exponential_distribution_pool(number_of_arguments, scale_parameter=1):
     """
     distribution for the weights of the arguments in the pool
 
