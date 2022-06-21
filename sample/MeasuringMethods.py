@@ -1,6 +1,8 @@
 """
 Methods for calculating the measures for the analysis of the agent based simulations and creating plots
 """
+import copy
+
 import matplotlib.pyplot as plt
 import numpy as np
 from scipy.signal import argrelmax
@@ -33,10 +35,14 @@ def get_two_groups_as_opinions(opinions):
     group_range = 7
 
     # pick the boarders for each group,
-    split = []
-    for i in range(len(maxima)-1):
-        if maxima[i+1] - maxima[i] > group_range:
-            split.append(maxima[i])
+    split = maxima
+    remove = []
+    for i in range(len(maxima) - 1):
+        if maxima[i+1] - maxima[i] <= group_range:
+            remove.append(maxima[i])
+
+    for rem in remove:
+        split.remove(rem)
 
     groups = [] # agents with bins in simmilar range are in one group
     for i in range(len(split)+1):
@@ -51,7 +57,7 @@ def get_two_groups_as_opinions(opinions):
             if bins[i] <= split[k] + group_range: # untere grenze muss man nicht überprüfen, weil sie sonst eh in vorheriger gruppe ist
                 groups[k].append(i)
                 in_last = False
-                continue
+                break
         if in_last:
             groups[len(split)].append(opinions[i])
 
