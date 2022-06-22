@@ -15,17 +15,21 @@ def simple_minded(agent, new_argument, new_argument_index):
     :return: no returns, just side effects
     """
 
-    length_before = len(agent)
-    agent.update({new_argument_index: new_argument})
+    agent_copy = copy.deepcopy(agent)
 
-    if len(agent) == length_before:  # agent already has this argument, doesn't need to forget another one
+    length_before = len(agent_copy)
+    agent_copy.update({new_argument_index: new_argument})
+
+    if len(agent_copy) == length_before:  # agent already has this argument, doesn't need to forget another one
         return
 
     # pick one key/index by random and remove the index, argument pair from its memory
-    all_keys = list(agent.keys())
+    all_keys = list(agent_copy.keys())
     random_key_index = random.randint(0, len(all_keys) - 1)
     random_key = all_keys[random_key_index]
-    agent.pop(random_key)
+    agent_copy.pop(random_key)
+
+    return agent_copy
 
 
 def weight_minded(agent, new_argument, new_argument_index):
@@ -38,14 +42,16 @@ def weight_minded(agent, new_argument, new_argument_index):
     :return: no returns, just side effects
     """
 
-    length_before = len(agent)
-    agent.update({new_argument_index: new_argument})
+    agent_copy = copy.deepcopy(agent)
 
-    if len(agent) == length_before:  # agent already has this argument
+    length_before = len(agent_copy)
+    agent_copy.update({new_argument_index: new_argument})
+
+    if len(agent_copy) == length_before:  # agent already has this argument
         return
 
     # convert directory of index, argument pairs to list of pairs
-    kv_arguments = list(agent.items())
+    kv_arguments = list(agent_copy.items())
 
     # find the overall absolut the weakest argument and the corresponding index
     current_weakest = abs(kv_arguments[0][1])
@@ -56,7 +62,9 @@ def weight_minded(agent, new_argument, new_argument_index):
             current_weakest_index = kv_arguments[i][0]
 
     # remove the index, argument pair from the memory
-    agent.pop(current_weakest_index)
+    agent_copy.pop(current_weakest_index)
+
+    return agent_copy
 
 
 def coherence_minded(agent, new_argument, new_argument_index):
@@ -69,14 +77,16 @@ def coherence_minded(agent, new_argument, new_argument_index):
     :return: no returns, just side effects
     """
 
-    length_before = len(agent)
-    agent.update({new_argument_index: new_argument})
+    agent_copy = copy.deepcopy(agent)
 
-    if len(agent) == length_before:  # agent already has this argument
+    length_before = len(agent_copy)
+    agent_copy.update({new_argument_index: new_argument})
+
+    if len(agent_copy) == length_before:  # agent already has this argument
         return
 
     # convert directory of index, argument pairs to list of pairs
-    kv_arguments = list(agent.items())
+    kv_arguments = list(agent_copy.items())
 
     # calculate the current opinion to later decide if a positiv or negativ argument should be forgotten
     current_opinion = new_argument
@@ -102,15 +112,17 @@ def coherence_minded(agent, new_argument, new_argument_index):
 
     # check which argument should be forgotten
     if current_opinion < 0 and weakest_positive > 0:
-        agent.pop(weakest_positive_index)
+        agent_copy.pop(weakest_positive_index)
     elif current_opinion > 0 and weakest_negative < 0:
-        agent.pop(weakest_negative_index)
+        agent_copy.pop(weakest_negative_index)
     else:
         if weakest_positive == 0 and weakest_negative != 0:
-            agent.pop(weakest_negative_index)
+            agent_copy.pop(weakest_negative_index)
         elif weakest_negative == 0 and weakest_positive !=0:
-            agent.pop(weakest_positive_index)
+            agent_copy.pop(weakest_positive_index)
         elif abs(weakest_negative) < abs(weakest_positive):
-            agent.pop(weakest_negative_index)
+            agent_copy.pop(weakest_negative_index)
         else:
-            agent.pop(weakest_positive_index)
+            agent_copy.pop(weakest_positive_index)
+
+    return agent_copy
