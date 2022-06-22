@@ -1,6 +1,7 @@
 """
 This module includes forgetting strategies
 """
+import copy
 import random
 
 
