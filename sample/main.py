@@ -54,7 +54,7 @@ def do_n_steps(number_of_steps, argument_pool, agents, forgetting, deliberation)
 if __name__ == '__main__':
     max_steps = 100000  # 100.000 in paper
     plot_every_n_steps = 10000
-    plot_when_in = [0, 5, 10, 50, 100, 250, 500, 1000, 2500, 5000, 7500, 10000, 25000, 50000, max_steps - 1]
+    plot_when_in = [0, 5, 10, 50, 100, 150, 200, 250, 300, 400, 500, 1000, 2500, 5000, 7500, 10000, 25000, 50000, max_steps - 1]
 
     size_of_argument_pool = 500  # 500 in paper
     count_of_agents = 50  # 50 in paper
@@ -76,7 +76,7 @@ if __name__ == '__main__':
 
     for i in range(max_steps):
         # hier wird die deliberation-Strategie und die Vergessens-Strategie angewandt
-        agents_for_next_step, argument_pool = do_n_steps(1, argument_pool, agents_for_next_step, forg.simple_minded, delib.pure_deliberation)
+        agents_for_next_step, argument_pool = do_n_steps(1, argument_pool, agents_for_next_step, forg.coherence_minded, delib.outside_deliberation)
 
         # Ergebnisse plotten
         if i % plot_every_n_steps == 0 or i in plot_when_in:
@@ -121,6 +121,7 @@ if __name__ == '__main__':
             if converged_average and converged_reasons:
                 break
 
+    #Ergebnisse plotten
     print("Time to polarize average: ", time_to_polarize_average)
     print("Time to polarize reasons: ", time_to_polarize_reasons)
 
@@ -129,6 +130,7 @@ if __name__ == '__main__':
     plt.plot(steps, subgroup_divergence, label='subgroup divergence for two groups', marker="o")
     plt.plot(steps, number_of_groups, label='number of groups', marker="o")
     plt.xlabel("num of steps")
+    plt.title("General stats after model converged")
     plt.legend()
     plt.show()
 
@@ -141,4 +143,5 @@ if __name__ == '__main__':
     for group in transposed:
         plt.plot(steps, group, label='subgroup_size', marker="o")
     plt.xlabel("num of steps")
+    plt.title("Number of groups after model converged")
     plt.show()

@@ -56,8 +56,9 @@ def outside_deliberation(agents, argument_pool, forgetting_strategy):
     for i in range(len(agents)):
         pure_deliberation_agents.append(forgetting_strategy(agents[i], new_arguments[i], new_argument_indices[i]))
 
+
     # second pure deliberation is applied
-    return_agents = pure_deliberation(agents, argument_pool, forgetting_strategy)
+    return_agents, argument_pool = pure_deliberation(pure_deliberation_agents, argument_pool, forgetting_strategy)
 
     return return_agents, argument_pool
 
