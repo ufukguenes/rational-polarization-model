@@ -5,7 +5,6 @@ import copy
 
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy.signal import argrelmax
 
 
 def get_average_opinions(agents):
@@ -21,10 +20,10 @@ def get_average_opinions(agents):
     return opinions
 
 
-def find_max(values):
+def find_max_index(values):
     maxima = []
 
-    values = np.insert(values, 0, 0)
+    values = np.insert(values, 0, 0) # am anfang und ende eine 0 einfügen um auch den ersten und letzten wert zu betrachten
     values = np.append(values, 0)
     for i in range(1, len(values)-1):
         if values[i+1] < values[i] and values[i-1] < values[i]:
@@ -36,7 +35,7 @@ def get_groups(opinions):
 
     bins = np.digitize(opinions, bins=np.arange(-100, 100, 1))
     bincount = np.bincount(bins)
-    maxima = find_max(bincount)
+    maxima = find_max_index(bincount)
     group_range = 7
 
     # pick the boarders for each group,
