@@ -38,7 +38,6 @@ def init(number_of_arguments, number_of_agents, size_of_memory, distribution):
 
 
 def do_n_steps(number_of_steps, argument_pool, agents, forgetting, deliberation):
-
     # je ein Schritt der Simulation
     agents_for_next_step = agents
     for i in range(number_of_steps):
@@ -48,7 +47,8 @@ def do_n_steps(number_of_steps, argument_pool, agents, forgetting, deliberation)
     return agents_for_next_step, argument_pool
 
 
-def statistical_set_up(distribution, forgetting, deliberation, runs=10, max_steps=100000, size_of_argument_pool=500, count_of_agents=50, count_of_memory=7):
+def statistical_set_up(distribution, forgetting, deliberation, runs=10, max_steps=100000, size_of_argument_pool=500,
+                       count_of_agents=50, count_of_memory=7):
     stats_every_n_steps = 1000
     stats_when_in = [0, 5, 10, 50, 100, 150, 200, 250, 300, 400, 500, max_steps - 1]
     all_steps = []
@@ -58,8 +58,6 @@ def statistical_set_up(distribution, forgetting, deliberation, runs=10, max_step
     all_relative_subgroup_size = []
     all_time_to_polarize_average = []
     all_time_to_polarize_reasons = []
-
-
 
     for k in range(runs):
         print("run started: " + str(k))
@@ -77,13 +75,12 @@ def statistical_set_up(distribution, forgetting, deliberation, runs=10, max_step
                                                    distribution)
         for i in range(max_steps):
             agents_for_next_step, argument_pool = do_n_steps(1, argument_pool, agents_for_next_step, forgetting,
-                                                     deliberation)
+                                                             deliberation)
 
             if i % stats_every_n_steps == 0 or i in stats_when_in:
 
                 average_opinion = mes.get_average_opinions(agents_for_next_step)
                 opinions_by_group, index_by_group = mes.get_groups(average_opinion)
-
 
                 subgroup_divergence.append(mes.subgroup_divergence_for_two_groups(opinions_by_group))
                 subgroup_consensus.append(mes.subgroup_consensus(opinions_by_group))
@@ -120,8 +117,8 @@ def statistical_set_up(distribution, forgetting, deliberation, runs=10, max_step
         all_time_to_polarize_reasons.append(time_to_polarize_reasons[1])
 
 
-
-def standard_set_up(distribution, forgetting, deliberation, max_steps=100000, size_of_argument_pool=500, count_of_agents=50, count_of_memory=7):
+def standard_set_up(distribution, forgetting, deliberation, max_steps=100000, size_of_argument_pool=500,
+                    count_of_agents=50, count_of_memory=7):
     plot_every_n_steps = 10000
     plot_when_in = [0, 5, 10, 50, 100, 150, 200, 250, 300, 400, 500, 1000, 2500, 5000, 7500, 10000, 25000, 50000,
                     max_steps - 1]
@@ -212,3 +209,5 @@ def standard_set_up(distribution, forgetting, deliberation, max_steps=100000, si
     plt.xlabel("num of steps")
     plt.title("Number of groups after model converged")
     plt.show()
+
+
