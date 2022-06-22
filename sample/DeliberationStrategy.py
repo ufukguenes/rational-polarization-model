@@ -12,7 +12,7 @@ def pure_deliberation(agents, argument_pool, forgetting_strategy):
     :param agents: the agents which are together in a discussion
     :param argument_pool: the pool of arguments from which an outside argument will be chosen
     :param forgetting_strategy: the strategy which will be used for forgetting
-    :return: no returns, just side effects
+    :return: new agents and the same argument pool
     """
 
     # pick a random agent
@@ -29,7 +29,7 @@ def pure_deliberation(agents, argument_pool, forgetting_strategy):
     for agent in agents:
         return_agents.append(forgetting_strategy(agent, random_argument, random_key))
 
-    return return_agents
+    return return_agents, argument_pool
 
 
 # returns "size of agents"-many arguments in a list, needs pure deliberation afterwards
@@ -40,7 +40,7 @@ def outside_deliberation(agents, argument_pool, forgetting_strategy):
     :param agents: the agents which are together in a discussion
     :param argument_pool: the pool of arguments from which an outside argument will be chosen
     :param forgetting_strategy: the strategy which will be used for forgetting
-    :return: no returns, just side effects
+    :return: new agents and the same argument pool
     """
 
     # pick a new possibly different and new outside argument for each agent
@@ -59,7 +59,7 @@ def outside_deliberation(agents, argument_pool, forgetting_strategy):
     # second pure deliberation is applied
     return_agents = pure_deliberation(agents, argument_pool, forgetting_strategy)
 
-    return return_agents
+    return return_agents, argument_pool
 
     '''
     wenn ein agent eine argument bekommt, dass er noch nicht kennt, erhöht sich die anzahl seiner argumente.

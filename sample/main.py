@@ -1,44 +1,31 @@
 import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
 
 import ForgettingStrategy as forg
 import DeliberationStrategy as delib
 import ArgumentPoolInitialisationStrategy as argp
 import MeasuringMethods as mes
 
-number_of_steps = 100000  # 100.000 in paper
-plot_every_n_steps = 10000
-plot_when_in = [0, 5, 10, 50, 100, 250, 500, 1000, 2500, 5000, 7500, 10000, 25000, 50000, number_of_steps - 1]
 
-size_of_argument_pool = 500  # 500 in paper
+def init(number_of_arguments, number_of_agents, size_of_memory, distribution):
+    # TODO bei unlimeted memory, hat jeder dann alle argumente?
+    '''
+    for k in range(size_of_memory):
+        random_index = random.randint(0, size_of_argument_pool - 1)
+        next_argument = argument_pool[random_index]
+        arguments_of_one.append((random_index, next_argument))
+    '''
 
-scale_parameter_exp_distri = 1  # 1 in paper
-
-number_of_agents = 50  # 50 in paper
-size_of_memory = 7  # 7 or unlimited in paper
-
-
-def init(num_steps, num_arguments, num_agents, size_memory, distribution, forgetting, deliberation):
     # init all the available arguments
-    argument_pool = distribution(size_of_argument_pool)
-
+    argument_pool = distribution(number_of_arguments)
     agents = []
 
     # give each agent random arguments
-    for i in range(num_agents):
+    for i in range(number_of_agents):
         arguments_of_one = []
 
-        # TODO bei unlimeted memory, hat jeder dann alle argumente?
-        '''
-        for k in range(size_of_memory):
-            random_index = random.randint(0, size_of_argument_pool - 1)
-            next_argument = argument_pool[random_index]
-            arguments_of_one.append((random_index, next_argument))
-        '''
-
         # permutiere alle indizes der Argumente, um die ersten size_memory vielen indizes herrauszunehmen.
-        random_indices_permutation = np.random.permutation(num_arguments)
+        random_indices_permutation = np.random.permutation(number_of_arguments)
         indices_to_take = list(range(0, size_of_memory))
         indices_of_one = np.take(random_indices_permutation, indices_to_take).tolist()
 
@@ -49,6 +36,29 @@ def init(num_steps, num_arguments, num_agents, size_memory, distribution, forget
         # füge die Index, Argument paare in eine HashMap/ Directory ein
         argument_dictionary = dict(arguments_of_one)
         agents.append(argument_dictionary)
+
+    return agents, argument_pool
+
+
+def do_n_steps(number_of_steps, argument_pool, agents, forgetting, deliberation):
+
+    # je ein Schritt der Simulation
+    agents_for_next_step = agents
+    for i in range(number_of_steps):
+        # hier wird die deliberation-Strategie und die Vergessens-Strategie angewandt
+        agents_for_next_step, argument_pool = deliberation(agents_for_next_step, argument_pool, forgetting)
+
+    return agents_for_next_step, argument_pool
+
+
+if __name__ == '__main__':
+    max_steps = 100000  # 100.000 in paper
+    plot_every_n_steps = 10000
+    plot_when_in = [0, 5, 10, 50, 100, 250, 500, 1000, 2500, 5000, 7500, 10000, 25000, 50000, max_steps - 1]
+
+    size_of_argument_pool = 500  # 500 in paper
+    count_of_agents = 50  # 50 in paper
+    count_of_memory = 7  # 7 or unlimited in paper
 
     # je ein Schritt der Simulation
     std = []
@@ -61,35 +71,38 @@ def init(num_steps, num_arguments, num_agents, size_memory, distribution, forget
     time_to_polarize_reasons = [0, 0]
     converged_average = False
     converged_reasons = False
-    agents_for_next_step = agents
-    for i in range(num_steps):
+
+    agents_for_next_step, argument_pool = init(size_of_argument_pool,count_of_agents,count_of_memory, argp.exponential_distribution_pool)
+
+    for i in range(max_steps):
         # hier wird die deliberation-Strategie und die Vergessens-Strategie angewandt
-        agents_for_next_step = deliberation(agents_for_next_step, argument_pool, forgetting)
+        agents_for_next_step, argument_pool = do_n_steps(1, argument_pool, agents_for_next_step, forg.simple_minded, delib.pure_deliberation)
 
         # Ergebnisse plotten
         if i % plot_every_n_steps == 0 or i in plot_when_in:
 
-            opinions = mes.get_average_opinions(agents)
+            average_opinion = mes.get_average_opinions(agents_for_next_step)
+            opinions_by_group, index_by_group = mes.get_groups(average_opinion)
 
-            lower = min(-24, round(min(opinions)) - 5)
-            upper = max(24, round(max(opinions)) + 5)
+            lower = min(-24, round(min(average_opinion)) - 5)
+            upper = max(24, round(max(average_opinion)) + 5)
             width = 2
 
-            plt.hist(opinions, bins=range(lower, upper, width))
+            plt.hist(average_opinion, bins=range(lower, upper, width))
             plt.title("Opinions after " + str(i) + " steps")
             plt.xlabel("opinion")
             plt.ylabel("number of agents")
 
             plt.show()
 
-            subgroup_divergence.append(mes.subgroup_divergence_for_two_groups(agents_for_next_step))
-            subgroup_consensus.append(mes.subgroup_consensus(agents_for_next_step))
-            relative_subgroup_size.append(mes.relative_subgroup_size(agents_for_next_step))
+            subgroup_divergence.append(mes.subgroup_divergence_for_two_groups(opinions_by_group))
+            subgroup_consensus.append(mes.subgroup_consensus(opinions_by_group))
+            relative_subgroup_size.append(mes.relative_subgroup_size(opinions_by_group))
             steps.append(i)
 
             if converged_average:
                 continue
-            elif mes.is_converged_average(agents_for_next_step):
+            elif mes.is_converged_average(opinions_by_group):
                 time_to_polarize_average[1] = i
                 converged_average = True
             else:
@@ -97,22 +110,13 @@ def init(num_steps, num_arguments, num_agents, size_memory, distribution, forget
 
             if converged_reasons:
                 continue
-            elif mes.is_converged_reasons(agents_for_next_step):
+            elif mes.is_converged_reasons(agents_for_next_step, opinions_by_group, index_by_group):
                 time_to_polarize_reasons[1] = i
                 converged_reasons = True
             else:
                 time_to_polarize_reasons[0] = i
 
-            average = mes.get_average_opinions(agents_for_next_step)
-            groups_opinion, groups_agent_index = mes.get_groups(average)
-
-            number_of_groups.append(len(groups_opinion))
-
-            group_avg = []
-            group_std = []
-            for group in groups_opinion:
-                group_avg.append(np.average(group))
-                group_std.append(np.std(group))
+            number_of_groups.append(len(opinions_by_group))
 
             if converged_average and converged_reasons:
                 break
@@ -138,9 +142,3 @@ def init(num_steps, num_arguments, num_agents, size_memory, distribution, forget
         plt.plot(steps, group, label='subgroup_size', marker="o")
     plt.xlabel("num of steps")
     plt.show()
-
-
-if __name__ == '__main__':
-    init(number_of_steps, size_of_argument_pool, number_of_agents, size_of_memory,
-         argp.exponential_distribution_pool, forg.simple_minded,
-         delib.pure_deliberation)
