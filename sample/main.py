@@ -61,24 +61,25 @@ def init(num_steps, num_arguments, num_agents, size_memory, distribution, forget
     time_to_polarize_reasons = [0, 0]
     converged_average = False
     converged_reasons = False
+    agents_for_next_step = agents
     for i in range(num_steps):
         # hier wird die deliberation-Strategie und die Vergessens-Strategie angewandt
-        deliberation(agents, argument_pool, forgetting)
+        agents_for_next_step = deliberation(agents_for_next_step, argument_pool, forgetting)
 
         # Ergebnisse plotten
         if i % plot_every_n_steps == 0 or i in plot_when_in:
 
-            mes.opinion_of_each_agent(agents, i)
+            mes.opinion_of_each_agent(agents_for_next_step, i)
             plt.show()
 
-            subgroup_divergence.append(mes.subgroup_divergence_for_two_groups(agents))
-            subgroup_consensus.append(mes.subgroup_consensus(agents))
-            relative_subgroup_size.append(mes.relative_subgroup_size(agents))
+            subgroup_divergence.append(mes.subgroup_divergence_for_two_groups(agents_for_next_step))
+            subgroup_consensus.append(mes.subgroup_consensus(agents_for_next_step))
+            relative_subgroup_size.append(mes.relative_subgroup_size(agents_for_next_step))
             steps.append(i)
 
             if converged_average:
                 continue
-            elif mes.is_converged_average(agents):
+            elif mes.is_converged_average(agents_for_next_step):
                 time_to_polarize_average[1] = i
                 converged_average = True
             else:
@@ -86,13 +87,13 @@ def init(num_steps, num_arguments, num_agents, size_memory, distribution, forget
 
             if converged_reasons:
                 continue
-            elif mes.is_converged_reasons(agents):
+            elif mes.is_converged_reasons(agents_for_next_step):
                 time_to_polarize_reasons[1] = i
                 converged_reasons = True
             else:
                 time_to_polarize_reasons[0] = i
 
-            average = mes.get_average_opinions(agents)
+            average = mes.get_average_opinions(agents_for_next_step)
             groups_opinion, groups_agent_index = mes.get_groups(average)
 
             number_of_groups.append(len(groups_opinion))
@@ -127,19 +128,6 @@ def init(num_steps, num_arguments, num_agents, size_memory, distribution, forget
         plt.plot(steps, group, label='subgroup_size', marker="o")
     plt.xlabel("num of steps")
     plt.show()
-
-
-def transpose(l1, l2):
-    # iterate over list l1 to the length of an item
-    for i in range(len(l1[0])):
-        # print(i)
-        row = []
-        for item in l1:
-            # appending to new list with values and index positions
-            # i contains index position and item contains values
-            row.append(item[i])
-        l2.append(row)
-    return l2
 
 
 if __name__ == '__main__':

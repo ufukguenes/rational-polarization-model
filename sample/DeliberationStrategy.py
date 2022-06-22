@@ -24,9 +24,12 @@ def pure_deliberation(agents, argument_pool, forgetting_strategy):
     random_key = all_keys[random_key_index]
     random_argument = agents[random_agent_index].get(random_key)
 
+    return_agents = []
     # apply the forgetting strategy on each agent with the random argument
     for agent in agents:
-        forgetting_strategy(agent, random_argument, random_key)
+        return_agents.append(forgetting_strategy(agent, random_argument, random_key))
+
+    return return_agents
 
 
 # returns "size of agents"-many arguments in a list, needs pure deliberation afterwards
@@ -48,12 +51,15 @@ def outside_deliberation(agents, argument_pool, forgetting_strategy):
         new_arguments.append(argument_pool[random_argument_index])
         new_argument_indices.append(random_argument_index)
 
+    pure_deliberation_agents = []
     # first each agent applies its forgetting strategy on the outside argument
     for i in range(len(agents)):
-        forgetting_strategy(agents[i], new_arguments[i], new_argument_indices[i])
+        pure_deliberation_agents.append(forgetting_strategy(agents[i], new_arguments[i], new_argument_indices[i]))
 
     # second pure deliberation is applied
-    pure_deliberation(agents, argument_pool, forgetting_strategy)
+    return_agents = pure_deliberation(agents, argument_pool, forgetting_strategy)
+
+    return return_agents
 
     '''
     wenn ein agent eine argument bekommt, dass er noch nicht kennt, erhöht sich die anzahl seiner argumente.

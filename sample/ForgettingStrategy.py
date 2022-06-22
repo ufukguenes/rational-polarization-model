@@ -21,7 +21,7 @@ def simple_minded(agent, new_argument, new_argument_index):
     agent_copy.update({new_argument_index: new_argument})
 
     if len(agent_copy) == length_before:  # agent already has this argument, doesn't need to forget another one
-        return
+        return agent_copy
 
     # pick one key/index by random and remove the index, argument pair from its memory
     all_keys = list(agent_copy.keys())
@@ -48,7 +48,7 @@ def weight_minded(agent, new_argument, new_argument_index):
     agent_copy.update({new_argument_index: new_argument})
 
     if len(agent_copy) == length_before:  # agent already has this argument
-        return
+        return agent_copy
 
     # convert directory of index, argument pairs to list of pairs
     kv_arguments = list(agent_copy.items())
@@ -83,7 +83,7 @@ def coherence_minded(agent, new_argument, new_argument_index):
     agent_copy.update({new_argument_index: new_argument})
 
     if len(agent_copy) == length_before:  # agent already has this argument
-        return
+        return agent_copy
 
     # convert directory of index, argument pairs to list of pairs
     kv_arguments = list(agent_copy.items())
