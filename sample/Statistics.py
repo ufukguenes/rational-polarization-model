@@ -4,7 +4,7 @@ import numpy as np
 import MeasuringMethods as mes
 
 
-class Stats:
+class Statistics:
     max_index = -1
     steps = []
     average_opinion = []
@@ -35,7 +35,7 @@ class Stats:
         if not self.converged_average and mes.is_converged_average(opinions_by_group):
             self.time_to_polarize_average[1] = current_step
             self.converged_average = True
-        elif self.converged_average:
+        elif not self.converged_average:
             self.time_to_polarize_average[0] = current_step
 
         if not self.converged_reasons and mes.is_converged_reasons(agents, opinions_by_group, index_by_group):
@@ -46,7 +46,7 @@ class Stats:
 
         self.number_of_groups.append(len(opinions_by_group))
 
-        self.max_index = len(self.steps)
+        self.max_index = len(self.steps) - 1
 
     def has_converged(self):
         return self.converged_average and self.converged_reasons

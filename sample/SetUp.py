@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 import MeasuringMethods as mes
+import Statistics as stat
 
 
 def init(number_of_arguments, number_of_agents, size_of_memory, distribution):
@@ -46,6 +47,28 @@ def do_n_steps(number_of_steps, argument_pool, agents, forgetting, deliberation)
 
     return agents_for_next_step, argument_pool
 
+
+def stand_set_up(distribution, forgetting, deliberation, max_steps=100000, size_of_argument_pool=500,
+                       count_of_agents=50, count_of_memory=7):
+    stats_every_n_steps = 1000
+    stats_when_in = [0, 5, 10, 50, 100, 150, 200, 250, 300, 400, 500, max_steps - 1]
+
+    stats = stat.Statistics()
+
+
+    agents_for_next_step, argument_pool = init(size_of_argument_pool, count_of_agents, count_of_memory,
+                                               distribution)
+    for i in range(max_steps):
+        agents_for_next_step, argument_pool = do_n_steps(1, argument_pool, agents_for_next_step, forgetting,
+                                                         deliberation)
+
+        if i % stats_every_n_steps == 0 or i in stats_when_in:
+            stats.calculate(agents_for_next_step, i)
+            stats.plot_average_opinion()
+            if stats.has_converged():
+                break
+
+    stats.plot_general_stats()
 
 def statistical_set_up(distribution, forgetting, deliberation, runs=10, max_steps=100000, size_of_argument_pool=500,
                        count_of_agents=50, count_of_memory=7):
