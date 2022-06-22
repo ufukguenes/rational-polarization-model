@@ -69,7 +69,17 @@ def init(num_steps, num_arguments, num_agents, size_memory, distribution, forget
         # Ergebnisse plotten
         if i % plot_every_n_steps == 0 or i in plot_when_in:
 
-            mes.opinion_of_each_agent(agents_for_next_step, i)
+            opinions = mes.get_average_opinions(agents)
+
+            lower = min(-24, round(min(opinions)) - 5)
+            upper = max(24, round(max(opinions)) + 5)
+            width = 2
+
+            plt.hist(opinions, bins=range(lower, upper, width))
+            plt.title("Opinions after " + str(i) + " steps")
+            plt.xlabel("opinion")
+            plt.ylabel("number of agents")
+
             plt.show()
 
             subgroup_divergence.append(mes.subgroup_divergence_for_two_groups(agents_for_next_step))
@@ -132,5 +142,5 @@ def init(num_steps, num_arguments, num_agents, size_memory, distribution, forget
 
 if __name__ == '__main__':
     init(number_of_steps, size_of_argument_pool, number_of_agents, size_of_memory,
-         argp.exponential_distribution_pool, forg.coherence_minded,
-         delib.outside_deliberation)
+         argp.exponential_distribution_pool, forg.simple_minded,
+         delib.pure_deliberation)

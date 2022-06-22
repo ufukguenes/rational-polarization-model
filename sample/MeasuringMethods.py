@@ -1,158 +1,151 @@
 """
 Methods for calculating the measures for the analysis of the agent based simulations and creating plots
 """
-import copy
 
-import matplotlib.pyplot as plt
 import numpy as np
 
 
+# is stable/ order of indices won't change
 def get_average_opinions(agents):
     opinions = []
     for arguments in agents:
         all_values = list(arguments.values())
-        current_opinion = 0
-        for value in all_values:
-            current_opinion += value
-
-        opinions.append(current_opinion)
+        opinions.append(sum(all_values))
 
     return opinions
 
 
 def find_max_index(values):
+    """
+    finds the indices of the maxima in the given list
+
+    :@param values: list in which maxima shall be found
+    :return: list of indices
+    """
+
     maxima = []
 
-    values = np.insert(values, 0, 0) # am anfang und ende eine 0 einfügen um auch den ersten und letzten wert zu betrachten
+    values = np.insert(values, 0,
+                       0)  # am anfang und ende eine 0 einfügen um auch den ersten und letzten wert zu betrachten
     values = np.append(values, 0)
-    for i in range(1, len(values)-1):
-        if values[i+1] < values[i] and values[i-1] < values[i]:
+    for i in range(1, len(values) - 1):
+        if values[i + 1] < values[i] and values[i - 1] < values[i]:
             maxima.append(i)
     return maxima
 
 
-def get_groups(opinions):
+def get_groups(opinions, group_range=7):
+    """
+    berechnet die gruppen basierend auf maxima. Um ein Maxima werden alle elemente innerhalb der group range zu
+    einer Gruppe zusammen gelegt
+
+    :@param opinions: die daten, die grupiert werden sollen
+    :@param group_range: die Weite mit der jede Gruppe gebildet werden soll
+    :return: Gruppierung nach Meinung und Gruppierung nach Index
+    """
 
     bins = np.digitize(opinions, bins=np.arange(-100, 100, 1))
     bincount = np.bincount(bins)
     maxima = find_max_index(bincount)
-    group_range = 7
 
-    # pick the boarders for each group,
+    # pick the boarders for each group and remove unnecessary maxima
     split = maxima
     remove = []
     for i in range(len(maxima) - 1):
-        if abs(maxima[i+1] - maxima[i]) <= group_range:
+        if abs(maxima[i + 1] - maxima[i]) <= group_range:
             remove.append(maxima[i])
 
     for rem in remove:
         split.remove(rem)
 
+    # if no maxima remain, then there is only one group
     if len(split) == 0:
         return [opinions], [list(range(len(opinions)))]
 
-    groups_opinion = [] # agents with bins in simmilar range are in one group
-    groups_agent_index = []
+    # finde die gruppen bassierend auf einer Gruppen-weite
+    opinions_by_group = []  # agents with bins in similar range are in one group
+    index_by_group = []
 
     for i in range(len(split)):
-        groups_opinion.append([])
-        groups_agent_index.append([])
+        opinions_by_group.append([])
+        index_by_group.append([])
 
     not_used_indices = list(range(len(opinions)))
 
     for i in range(len(bins)):
-        in_last = True
         for k in range(len(split)):
-            bin = bins[i]
-            curr = split[k]
-            currplus = curr + group_range
-            if bins[i] <= split[k] + group_range: # untere grenze muss man nicht überprüfen, weil sie sonst eh in vorheriger gruppe ist
-                groups_opinion[k].append(opinions[i])
-                groups_agent_index[k].append(i)
+            if bins[i] <= split[k] + group_range:  # untere grenze muss man nicht überprüfen, weil sie sonst eh in vorheriger gruppe ist
+                opinions_by_group[k].append(opinions[i])
+                index_by_group[k].append(i)
                 not_used_indices.remove(i)
-                in_last = False
                 break
 
+    # alle die die größer als die letzte Gruppe sind, kommen auch in die letzte Gruppe
     for index in not_used_indices:
-        groups_opinion[len(split) - 1].append(opinions[index])
-        groups_agent_index[len(split) - 1].append(index)
+        opinions_by_group[len(split) - 1].append(opinions[index])
+        index_by_group[len(split) - 1].append(index)
 
-    return groups_opinion, groups_agent_index
+    return opinions_by_group, index_by_group
 
 
-def opinion_of_each_agent(agents, steps):
+def subgroup_divergence_for_two_groups(opinions_by_group):
     """
-    calculates the sum of all weights for each agent in the list
+    calculates subgroup divergence by assuming there are exactly two groups and calculating the difference in their
+    average opinion
 
-    :param agents: the agents for which the opinion will be calculated
-    :param steps: iteration of the model; to display the iteration step in the graph
-    :return: a list of opinions/ doubles in the same order the agents where provided
+    :@param opinions_by_group: the opinions of agents grouped
+    :return: difference from average opinions
     """
 
-    opinions = get_average_opinions(agents)
-
-    lower = min(-24, round(min(opinions))-5)
-    upper = max(24, round(max(opinions))+5)
-    width = 2
-
-    plt.hist(opinions, bins=range(lower, upper, width))
-    plt.title("Opinions after " + str(steps) + " steps")
-    plt.xlabel("opinion")
-    plt.ylabel("number of agents")
-
-
-def standard_dev(agents):
-    average_opinion = get_average_opinions(agents)
-    std = np.std(average_opinion)
-    return std
-
-
-def subgroup_divergence_for_two_groups(agents):
-    average_opinions = get_average_opinions(agents)
-
-    groups_opinion, groups_agent_index = get_groups(average_opinions)
-
-    if len(groups_opinion) != 2:
+    if len(opinions_by_group) != 2:
         return 0
 
-    fst_avg = np.average(groups_opinion[0])
-    snd_avg = np.average(groups_opinion[1])
+    fst_avg = np.average(opinions_by_group[0])
+    snd_avg = np.average(opinions_by_group[1])
 
     return abs(fst_avg - snd_avg)
 
 
-def subgroup_consensus(agents):
-    average_opinions = get_average_opinions(agents)
+def subgroup_consensus(opinions_by_group):
+    """
+    calculates subgroup consensus by calculating the standard deviation of opinions per group
 
-    groups_opinion, groups_agent_index = get_groups(average_opinions)
+    :@param opinions_by_group: the opinions of agents grouped
+    :return: a list of std for each group by opinion
+    """
 
     std_per_group = []
-    for group in groups_opinion:
+    for group in opinions_by_group:
         std_per_group.append(np.std(group))
 
     return std_per_group
 
 
-def relative_subgroup_size(agents):
-    average_opinions = get_average_opinions(agents)
+def relative_subgroup_size(opinions_by_group):
+    """
+    calculates the subgroup size
 
-    groups_opinion, groups_agent_index = get_groups(average_opinions)
+    :@param opinions_by_group: the opinions of agents grouped
+    :return: size of each subgroup
+    """
 
     size_per_group = []
-    for group in groups_opinion:
+    for group in opinions_by_group:
         size_per_group.append(len(group))
 
     return size_per_group
 
 
-def is_converged_average(agents):
-    average_opinion = get_average_opinions(agents)
-    epsilon = 0.001
+def is_converged_average(opinions_by_group, epsilon=0.00001):
+    """
+    tests if a group is converged by comparing their average opinions for each group
 
-    groups_opinion, groups_agent_index = get_groups(average_opinion)
-
-    for i in range(len(groups_opinion)):
-        curr_group = groups_opinion[i]
+    :@param opinions_by_group: the opinions of agents grouped
+    :@param epsilon: the tolerance for comparing floats
+    :return: true if converged, otherwise false
+    """
+    for i in range(len(opinions_by_group)):
+        curr_group = opinions_by_group[i]
         test_opinion = curr_group[0]
         for opinion in curr_group:
             if not abs(test_opinion - opinion) < epsilon:
@@ -160,15 +153,20 @@ def is_converged_average(agents):
     return True
 
 
-def is_converged_reasons(agents):
-    average_opinion = get_average_opinions(agents)
-    groups_opinion, groups_agent_index = get_groups(average_opinion)
+def is_converged_reasons(agents, opinions_by_group, index_by_group):
+    """
+    tests if a group is converged by comparing their reasons for each group
 
-    for i in range(len(groups_opinion)):
-        curr_group_opinion = groups_opinion[i]
-        curr_group_index = groups_agent_index[i]
-        start_index = curr_group_index[0]
-        test_agent_keys = list(agents[start_index].keys())
+    :@param agents: the agents to be tested on
+    :@param opinions_by_group: the opinions of agents grouped
+    :@param index_by_group: the indices of agents grouped
+    :return: true if converged, otherwise false
+    """
+
+    for i in range(len(opinions_by_group)):
+        curr_group_index = index_by_group[i]
+        test_index = curr_group_index[0]
+        test_agent_keys = list(agents[test_index].keys())
 
         for index in curr_group_index:
             for argument in agents[index]:
