@@ -72,6 +72,7 @@ def get_groups(opinions, group_range=7):
 
     not_used_indices = list(range(len(opinions)))
 
+    #todo wenn ein wert von der unteren grenze + range gleich ist wie obere grenze - range, dann fällt der wert nur in untere range, gibt es nur einen wert in der oberen range, bleibt diese dadurch leer
     for i in range(len(bins)):
         for k in range(len(split)):
             if bins[i] <= split[k] + group_range:  # untere grenze muss man nicht überprüfen, weil sie sonst eh in vorheriger gruppe ist
@@ -85,6 +86,8 @@ def get_groups(opinions, group_range=7):
         opinions_by_group[len(split) - 1].append(opinions[index])
         index_by_group[len(split) - 1].append(index)
 
+    if len(opinions_by_group[len(opinions_by_group)-1]) == 0:
+        print("help")
     return opinions_by_group, index_by_group
 
 
@@ -99,6 +102,7 @@ def subgroup_divergence_for_two_groups(opinions_by_group):
 
     if len(opinions_by_group) != 2:
         return 0
+    #todo test for length of each sublist equals num of agents
 
     fst_avg = np.average(opinions_by_group[0])
     snd_avg = np.average(opinions_by_group[1])
