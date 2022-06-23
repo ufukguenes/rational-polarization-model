@@ -62,6 +62,7 @@ def stand_set_up(distribution, forgetting, deliberation, max_steps=100000, size_
         agents_for_next_step, argument_pool = do_n_steps(1, argument_pool, agents_for_next_step, forgetting,
                                                          deliberation)
 
+        #todo plottet nicht für den tatsächlichen 0 step, da der erste step schon gerade ausgeführt wurde
         if i % stats_every_n_steps == 0 or i in stats_when_in:
             stats.calculate(agents_for_next_step, i)
             stats.plot_average_opinion()
