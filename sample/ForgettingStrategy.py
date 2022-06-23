@@ -5,6 +5,14 @@ import copy
 import random
 
 
+def unlimited_minded(agent, new_argument, new_argument_index):
+    agent_copy = copy.copy(agent)
+
+    agent_copy.update({new_argument_index: new_argument})
+
+    return agent_copy
+
+
 def simple_minded(agent, new_argument, new_argument_index):
     """
     simple minded forgetting-strategy
@@ -15,7 +23,7 @@ def simple_minded(agent, new_argument, new_argument_index):
     :return: no returns, just side effects
     """
 
-    agent_copy = copy.deepcopy(agent)
+    agent_copy = copy.copy(agent)
 
     length_before = len(agent_copy)
     agent_copy.update({new_argument_index: new_argument})
@@ -42,7 +50,7 @@ def weight_minded(agent, new_argument, new_argument_index):
     :return: no returns, just side effects
     """
 
-    agent_copy = copy.deepcopy(agent)
+    agent_copy = copy.copy(agent)
 
     length_before = len(agent_copy)
     agent_copy.update({new_argument_index: new_argument})
@@ -77,7 +85,7 @@ def coherence_minded(agent, new_argument, new_argument_index):
     :return: no returns, just side effects
     """
 
-    agent_copy = copy.deepcopy(agent)
+    agent_copy = copy.copy(agent)
 
     length_before = len(agent_copy)
     agent_copy.update({new_argument_index: new_argument})
@@ -118,7 +126,7 @@ def coherence_minded(agent, new_argument, new_argument_index):
     else:
         if weakest_positive == 0 and weakest_negative != 0:
             agent_copy.pop(weakest_negative_index)
-        elif weakest_negative == 0 and weakest_positive !=0:
+        elif weakest_negative == 0 and weakest_positive != 0:
             agent_copy.pop(weakest_positive_index)
         elif abs(weakest_negative) < abs(weakest_positive):
             agent_copy.pop(weakest_negative_index)

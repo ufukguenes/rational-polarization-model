@@ -59,6 +59,7 @@ def standard_set_up(distribution, forgetting, deliberation, max_steps=100000, si
     stats.calculate(agents_for_next_step, 0)
     stats.create_plot_average_opinion()
     plt.show()
+    break_in_next_test = False
 
     for i in range(max_steps):
         agents_for_next_step, argument_pool = do_n_steps(1, argument_pool, agents_for_next_step, forgetting,
@@ -68,8 +69,13 @@ def standard_set_up(distribution, forgetting, deliberation, max_steps=100000, si
             stats.calculate(agents_for_next_step, i + 1)
             stats.create_plot_average_opinion()
             plt.show()
-            if stats.has_converged():
+            if break_in_next_test:
                 break
+
+            if stats.has_converged():
+                break_in_next_test = True
+            else:
+                break_in_next_test = False
 
     stats.create_plot_general_stats()
     plt.show()
@@ -83,8 +89,10 @@ def statistical_set_up(distribution, forgetting, deliberation, max_steps=100000,
     stats_when_in = [5, 10, 50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, max_steps - 1]
     all_stats = []
 
+
     for k in range(runs):
         print("current run: " + str(k))
+        break_in_next_test = False
         all_stats.append(Statistics.Statistics())
 
         agents_for_next_step, argument_pool = init(size_of_argument_pool, count_of_agents, count_of_memory,
@@ -98,8 +106,15 @@ def statistical_set_up(distribution, forgetting, deliberation, max_steps=100000,
             if (i + 1) % stats_every_n_steps == 0 or (i + 1) in stats_when_in:
                 all_stats[k].calculate(agents_for_next_step, i + 1)
 
-                if all_stats[k].has_converged():
+                if break_in_next_test:
                     break
+
+                if all_stats[k].has_converged():
+                    break_in_next_test = True
+                else:
+                    break_in_next_test = False
+
+
 
     # nur Statistiken zum anzeigen
     for stat in all_stats:
@@ -124,8 +139,13 @@ def statistical_set_up(distribution, forgetting, deliberation, max_steps=100000,
     all_min_step_res = 0
     relative_number_of_converged_runs_avg = len(all_stats)
     relative_number_of_converged_runs_res = len(all_stats)
+    relative_number_of_groups_one = 0
+    relative_number_of_groups_two = 0
+    relative_number_of_groups_more = 0
+    current_plot = 0
 
     for stat in all_stats:
+        current_plot += 1
         index = stat.max_index
         all_subgroup_divergence += stat.subgroup_divergence[index]
         all_subgroup_consensus += list(map(np.average, stat.subgroup_consensus))[index]
@@ -141,6 +161,16 @@ def statistical_set_up(distribution, forgetting, deliberation, max_steps=100000,
         if stat.time_to_polarize_reasons[1] == 0:
             relative_number_of_converged_runs_res -= 1
 
+        if stat.number_of_groups[index] == 1:
+            relative_number_of_groups_one += 1
+        if stat.number_of_groups[index] == 2:
+            relative_number_of_groups_two += 1
+        if stat.number_of_groups[index] > 2:
+            relative_number_of_groups_more += 1
+            stat.create_plot_average_opinion()
+            plt.title("plot num: " + str(current_plot))
+            plt.show()
+
     stat_size = len(all_stats)
     all_subgroup_divergence = all_subgroup_divergence / stat_size
     all_subgroup_consensus = all_subgroup_consensus / stat_size
@@ -151,11 +181,17 @@ def statistical_set_up(distribution, forgetting, deliberation, max_steps=100000,
     all_min_step_res = all_min_step_res / stat_size
     relative_number_of_converged_runs_avg = relative_number_of_converged_runs_avg / stat_size
     relative_number_of_converged_runs_res = relative_number_of_converged_runs_res / stat_size
+    relative_number_of_groups_one = relative_number_of_groups_one / stat_size
+    relative_number_of_groups_two = relative_number_of_groups_two / stat_size
+    relative_number_of_groups_more = relative_number_of_groups_more / stat_size
 
     print("average subgroup divergence: " + str(all_subgroup_divergence))
     print("average subgroup consensus: " + str(all_subgroup_consensus))
     print("average subgroup largest size: " + str(all_subgroup_size_biggest))
     print("average time to converge on opinion:  min:" + str(all_min_step_avg) + " max: " + str(all_max_step_avg))
     print("average time to converge on reasons:  min:" + str(all_min_step_res) + " max: " + str(all_max_step_res))
-    print("relative number of runs which converged an opinions, in %: " + str(relative_number_of_converged_runs_avg*100))
-    print("relative number of runs which converged an reasons, in %: " + str(relative_number_of_converged_runs_res*100))
+    print("relative number of runs which converged on opinions, in %: " + str(relative_number_of_converged_runs_avg*100))
+    print("relative number of runs which converged on reasons, in %: " + str(relative_number_of_converged_runs_res*100))
+    print("relative number of runs which ended in one group, in %: " + str(relative_number_of_groups_one*100))
+    print("relative number of runs which ended in two groups, in %: " + str(relative_number_of_groups_two*100))
+    print("relative number of runs which ended in more then two groups, in %: " + str(relative_number_of_groups_more*100))
