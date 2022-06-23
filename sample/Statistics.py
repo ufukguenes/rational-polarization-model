@@ -18,9 +18,25 @@ class Statistics:
     time_to_polarize_reasons = [0, 0]
     converged_average = False
     converged_reasons = False
+    show_plots = "no"
+
+    def __init__(self, show_plots="no"):
+        self.show_plots = show_plots
+        self.max_index = -1
+        self.steps = []
+        self.average_opinion = []
+        self.opinions_by_group_per_step = []
+        self.index_by_group_per_step = []
+        self.number_of_groups = []
+        self.subgroup_divergence = []
+        self.subgroup_consensus = []
+        self.relative_subgroup_size = []
+        self.time_to_polarize_average = [0, 0]
+        self.time_to_polarize_reasons = [0, 0]
+        self.converged_average = False
+        self.converged_reasons = False
 
     def calculate(self, agents, current_step):
-
         self.average_opinion.append(mes.get_average_opinions(agents))
         last_index = len(self.average_opinion) - 1
         opinions_by_group, index_by_group = mes.get_groups(self.average_opinion[last_index])
@@ -51,7 +67,7 @@ class Statistics:
     def has_converged(self):
         return self.converged_average and self.converged_reasons
 
-    def plot_general_stats(self):
+    def create_plot_general_stats(self):
         if self.max_index < 0:
             return
         print("polarized by average / by reasons: " + str(self.converged_average) + " / " + str(self.converged_reasons))
@@ -65,8 +81,24 @@ class Statistics:
         plt.xlabel("num of steps")
         plt.title("General stats after model converged")
         plt.legend()
-        plt.show()
 
+    def plot_subgroup_consensus(self):
+        subgroup_consensus_avg = list(map(np.average, self.subgroup_consensus))
+        plt.plot(self.steps, subgroup_consensus_avg, marker="o")
+        plt.title("Subgroup consensus")
+        plt.xlabel("num of steps")
+
+    def create_plot_subgroup_divergence(self):
+        plt.plot(self.steps, self.subgroup_divergence, label='subgroup divergence for two groups', marker="o")
+        plt.title("Subgroup divergence for two groups")
+        plt.xlabel("num of steps")
+
+    def create_plot_number_of_groups(self):
+        plt.plot(self.steps, self.number_of_groups, marker="o")
+        plt.title("Number of Groups")
+        plt.xlabel("num of steps")
+
+    def create_plot_relative_group_size(self):
         max_num_of_groups = max(map(len, self.relative_subgroup_size))
         for i in range(len(self.relative_subgroup_size)):
             while len(self.relative_subgroup_size[i]) < max_num_of_groups:
@@ -76,10 +108,9 @@ class Statistics:
         for group in transposed:
             plt.plot(self.steps, group, label='subgroup_size', marker="o")
         plt.xlabel("num of steps")
-        plt.title("Number of groups after model converged")
-        plt.show()
+        plt.title("Relative subgroup size")
 
-    def plot_average_opinion(self):
+    def create_plot_average_opinion(self):
         if self.max_index < 0:
             return
         max_index = self.max_index
@@ -92,5 +123,3 @@ class Statistics:
         plt.title("Opinions after " + str(self.steps[max_index]) + " steps")
         plt.xlabel("opinion")
         plt.ylabel("number of agents")
-
-        plt.show()
