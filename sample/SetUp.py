@@ -1,10 +1,6 @@
-import time
-
 import matplotlib.pyplot as plt
 import numpy as np
-from datetime import datetime
 
-import MeasuringMethods as mes
 import Statistics
 
 
@@ -56,7 +52,7 @@ def standard_set_up(distribution, forgetting, deliberation, max_steps=100000, si
     plot_every_n_steps = 1000
     plot_when_in = [5, 10, 50, 100, 150, 200, 250, 300, 400, 500, max_steps - 1]
 
-    stats = Statistics.Statistics(show_plots="yes")
+    stats = Statistics.Statistics()
 
     agents_for_next_step, argument_pool = init(size_of_argument_pool, count_of_agents, count_of_memory,
                                                distribution)
@@ -89,7 +85,6 @@ def statistical_set_up(distribution, forgetting, deliberation, max_steps=100000,
 
     for k in range(runs):
         print("current run: " + str(k))
-        start = datetime.now()
         all_stats.append(Statistics.Statistics())
 
         agents_for_next_step, argument_pool = init(size_of_argument_pool, count_of_agents, count_of_memory,
@@ -105,8 +100,6 @@ def statistical_set_up(distribution, forgetting, deliberation, max_steps=100000,
 
                 if all_stats[k].has_converged():
                     break
-        end = datetime.now()
-        print("one step: " + str(end - start))
 
     # nur Statistiken zum anzeigen
     for stat in all_stats:

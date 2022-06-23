@@ -18,10 +18,8 @@ class Statistics:
     time_to_polarize_reasons = [0, 0]
     converged_average = False
     converged_reasons = False
-    show_plots = "no"
 
-    def __init__(self, show_plots="no"):
-        self.show_plots = show_plots
+    def __init__(self):
         self.max_index = -1
         self.steps = []
         self.average_opinion = []
