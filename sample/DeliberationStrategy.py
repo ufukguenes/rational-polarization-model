@@ -46,16 +46,10 @@ def outside_deliberation(agents, argument_pool, forgetting_strategy):
     # pick a new possibly different and new outside argument for each agent
     new_arguments = []
     new_argument_indices = []
+    pure_deliberation_agents = []
     for i in range(len(agents)):
         random_argument_index = random.randint(0, len(argument_pool) - 1)
-        new_arguments.append(argument_pool[random_argument_index])
-        new_argument_indices.append(random_argument_index)
-
-    pure_deliberation_agents = []
-    # first each agent applies its forgetting strategy on the outside argument
-    for i in range(len(agents)):
-        pure_deliberation_agents.append(forgetting_strategy(agents[i], new_arguments[i], new_argument_indices[i]))
-
+        pure_deliberation_agents.append(forgetting_strategy(agents[i], argument_pool[random_argument_index], random_argument_index))
 
     # second pure deliberation is applied
     return_agents, argument_pool = pure_deliberation(pure_deliberation_agents, argument_pool, forgetting_strategy)
