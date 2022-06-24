@@ -97,7 +97,7 @@ def coherence_minded(agent, new_argument, new_argument_index):
     kv_arguments = list(agent_copy.items())
 
     # calculate the current opinion to later decide if a positiv or negativ argument should be forgotten
-    current_opinion = new_argument
+    current_opinion = 0
     for argument in kv_arguments:
         current_opinion += argument[1]
 
@@ -134,3 +134,28 @@ def coherence_minded(agent, new_argument, new_argument_index):
             agent_copy.pop(weakest_positive_index)
 
     return agent_copy
+
+
+def weight_coherence_minded(agent, new_argument, new_argument_index):
+    agent_copy = copy.copy(agent)
+
+    length_before = len(agent_copy)
+    agent_copy.update({new_argument_index: new_argument})
+
+    if len(agent_copy) == length_before:  # agent already has this argument
+        return agent_copy
+
+    kv_arguments = list(agent_copy.items())
+
+    # find the overall absolut the weakest argument and the corresponding index
+    current_weakest = abs(kv_arguments[0][1])
+    current_weakest_index = kv_arguments[0][0]
+    for i in range(1, len(kv_arguments)):
+        if abs(kv_arguments[i][1]) < current_weakest:
+            current_weakest = abs(kv_arguments[i][1])
+            current_weakest_index = kv_arguments[i][0]
+
+    if current_weakest_index == new_argument_index:
+        return coherence_minded(agent, new_argument, new_argument_index)
+    else:
+        return weight_minded(agent, new_argument, new_argument_index)

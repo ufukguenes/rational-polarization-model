@@ -78,7 +78,7 @@ class Statistics:
         plt.plot(self.steps, self.number_of_groups, label='number of groups', marker="o")
         plt.xlabel("num of steps")
         plt.title("General stats after model converged")
-        plt.legend()
+        plt.legend(bbox_to_anchor=(1, 1))
 
     def plot_subgroup_consensus(self):
         subgroup_consensus_avg = list(map(np.average, self.subgroup_consensus))
@@ -87,7 +87,29 @@ class Statistics:
         plt.xlabel("num of steps")
 
     def create_plot_subgroup_divergence(self):
-        plt.plot(self.steps, self.subgroup_divergence, label='subgroup divergence for two groups', marker="o")
+        sub_sub = []
+        sub_sub.append(self.subgroup_divergence[0])
+        for i in range(1, len(self.subgroup_divergence)-1):
+            if self.subgroup_divergence[i] != 0:
+                sub_sub.append(self.subgroup_divergence[i])
+            else:
+                prev_dif_zero = i
+                next_dif_zero = i
+                while (self.subgroup_divergence[prev_dif_zero] == 0):
+                    prev_dif_zero -= 1
+                    if prev_dif_zero <= 0:
+                        prev_dif_zero = 0
+                        break
+                while (self.subgroup_divergence[next_dif_zero] == 0):
+                    next_dif_zero += 1
+                    if next_dif_zero >= self.max_index:
+                        next_dif_zero = self.max_index
+                        break
+                avg = self.subgroup_divergence[prev_dif_zero] + self.subgroup_divergence[next_dif_zero]
+                avg = avg / 2
+                sub_sub.append(avg)
+        sub_sub.append(self.subgroup_divergence[self.max_index])
+        plt.plot(self.steps, sub_sub, label='subgroup divergence for two groups', marker="o")
         plt.title("Subgroup divergence for two groups")
         plt.xlabel("num of steps")
 
@@ -121,3 +143,7 @@ class Statistics:
         plt.title("Opinions after " + str(self.steps[max_index]) + " steps")
         plt.xlabel("opinion")
         plt.ylabel("number of agents")
+
+
+    def merge_two_stats(self, stat):
+        return Statistics()

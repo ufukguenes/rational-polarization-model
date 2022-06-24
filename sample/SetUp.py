@@ -1,10 +1,13 @@
+import functools
+import random
+
 import matplotlib.pyplot as plt
 import numpy as np
 
 import Statistics
 
 
-def init(number_of_arguments, number_of_agents, size_of_memory, distribution):
+def init(number_of_arguments, number_of_agents, size_of_memory, distribution, arguments=[]):
     # TODO bei unlimeted memory, hat jeder dann alle argumente?
     '''
     for k in range(size_of_memory):
@@ -14,7 +17,11 @@ def init(number_of_arguments, number_of_agents, size_of_memory, distribution):
     '''
 
     # init all the available arguments
-    argument_pool = distribution(number_of_arguments)
+    if len(arguments) == 0:
+        argument_pool = distribution(number_of_arguments)
+    else:
+        argument_pool = arguments
+        number_of_arguments = len(arguments)
     agents = []
 
     # give each agent random arguments
@@ -89,7 +96,6 @@ def statistical_set_up(distribution, forgetting, deliberation, max_steps=100000,
     stats_when_in = [5, 10, 50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, max_steps - 1]
     all_stats = []
 
-
     for k in range(runs):
         print("current run: " + str(k))
         break_in_next_test = False
@@ -114,19 +120,116 @@ def statistical_set_up(distribution, forgetting, deliberation, max_steps=100000,
                 else:
                     break_in_next_test = False
 
+    show_stats_end(all_stats, "Results of Statistical run")
 
+
+def statistical_grouped_group_interaction(distribution, forgetting, deliberation, max_steps=100000,
+                                          size_of_argument_pool=500,
+                                          count_of_agents=50, count_of_memory=7, runs=10, num_of_groups=5,
+                                          talk_show=False, expert_group=False):
+    stats_every_n_steps = 1000
+    stats_when_in = [5, 10, 50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, max_steps - 1]
+    all_stats = []
+
+    for k in range(runs):
+        print("current run: " + str(k))
+        break_in_next_test = False
+        all_groups = []
+        all_argument_pools = []
+        current_stat = []
+
+        if not expert_group:
+            first_agent, initial_argument_pool = init(size_of_argument_pool, count_of_agents, count_of_memory,
+                                                      distribution)
+
+            #  init all groups
+            all_groups.append(first_agent)
+            all_argument_pools.append(initial_argument_pool)
+            for i in range(num_of_groups - 1):
+                next_agent, initial_argument_pool = init(size_of_argument_pool, count_of_agents, count_of_memory,
+                                                         distribution, arguments=initial_argument_pool)
+                all_groups.append(next_agent)
+                all_argument_pools.append(initial_argument_pool)
+        else:
+            for i in range(num_of_groups):
+                next_agent, argument_pool = init(size_of_argument_pool, count_of_agents, count_of_memory,
+                                                 distribution)
+                all_groups.append(next_agent)
+                all_argument_pools.append(argument_pool)
+
+        # let each group run until converged
+        for m in range(num_of_groups):
+
+            current_agent = all_groups[m]
+            current_stat.append(Statistics.Statistics())
+            current_stat[m].calculate(current_agent, 0)
+            break_in_next_test = False
+            for i in range(max_steps):
+
+                all_groups[m], all_argument_pools[m] = do_n_steps(1, all_argument_pools[m], all_groups[m], forgetting,
+                                                                  deliberation)
+
+                if (i + 1) % stats_every_n_steps == 0 or (i + 1) in stats_when_in:
+                    current_stat[m].calculate(all_groups[m], i + 1)
+
+                    if break_in_next_test:
+                        break
+
+                    if current_stat[m].has_converged():
+                        break_in_next_test = True
+                    else:
+                        break_in_next_test = False
+        # show_stats_end(current_stat, "Stats at end of run:" + str(k))
+        # print("\n")
+
+        # let groups talk together
+        all_stats.append(Statistics.Statistics())
+        combined_agents = []
+        if not talk_show:
+            for agents in all_groups:
+                combined_agents.extend(agents)
+        else:
+            for i in range(len(all_groups)):
+                for subgroup_index in current_stat[i].index_by_group_per_step[current_stat[i].max_index]:
+                    pick_random_agent_index = random.randint(0, len(subgroup_index) - 1)
+                    combined_agents.append(all_groups[i][pick_random_agent_index])
+        break_in_next_test = False
+        for i in range(max_steps):
+
+            combined_agents, all_argument_pools[m] = do_n_steps(1, all_argument_pools[m], combined_agents, forgetting,
+                                                                deliberation)
+
+            if (i + 1) % stats_every_n_steps == 0 or (i + 1) in stats_when_in:
+                all_stats[k].calculate(combined_agents, i + 1)
+
+                if break_in_next_test and i > 500:
+                    break
+
+                if all_stats[k].has_converged():
+                    break_in_next_test = True
+                else:
+                    break_in_next_test = False
+
+    show_stats_end(all_stats, "Stats at end of grouped interaction")
+
+
+def show_stats_end(all_stats, text):
+    print(text)
 
     # nur Statistiken zum anzeigen
     for stat in all_stats:
         stat.plot_subgroup_consensus()
+    plt.legend(list(range(len(all_stats))), bbox_to_anchor=(1, 1))
     plt.show()
 
     for stat in all_stats:
         stat.create_plot_subgroup_divergence()
+    plt.legend(list(range(len(all_stats))), bbox_to_anchor=(1, 1))
     plt.show()
 
     for stat in all_stats:
         stat.create_plot_number_of_groups()
+    plt.legend(list(range(len(all_stats))), bbox_to_anchor=(1, 1))
     plt.show()
 
     # average stat at the end
@@ -190,8 +293,11 @@ def statistical_set_up(distribution, forgetting, deliberation, max_steps=100000,
     print("average subgroup largest size: " + str(all_subgroup_size_biggest))
     print("average time to converge on opinion:  min:" + str(all_min_step_avg) + " max: " + str(all_max_step_avg))
     print("average time to converge on reasons:  min:" + str(all_min_step_res) + " max: " + str(all_max_step_res))
-    print("relative number of runs which converged on opinions, in %: " + str(relative_number_of_converged_runs_avg*100))
-    print("relative number of runs which converged on reasons, in %: " + str(relative_number_of_converged_runs_res*100))
-    print("relative number of runs which ended in one group, in %: " + str(relative_number_of_groups_one*100))
-    print("relative number of runs which ended in two groups, in %: " + str(relative_number_of_groups_two*100))
-    print("relative number of runs which ended in more then two groups, in %: " + str(relative_number_of_groups_more*100))
+    print("relative number of runs which converged on opinions, in %: " + str(
+        relative_number_of_converged_runs_avg * 100))
+    print(
+        "relative number of runs which converged on reasons, in %: " + str(relative_number_of_converged_runs_res * 100))
+    print("relative number of runs which ended in one group, in %: " + str(relative_number_of_groups_one * 100))
+    print("relative number of runs which ended in two groups, in %: " + str(relative_number_of_groups_two * 100))
+    print("relative number of runs which ended in more then two groups, in %: " + str(
+        relative_number_of_groups_more * 100))

@@ -44,8 +44,6 @@ def outside_deliberation(agents, argument_pool, forgetting_strategy):
     """
 
     # pick a new possibly different and new outside argument for each agent
-    new_arguments = []
-    new_argument_indices = []
     pure_deliberation_agents = []
     for i in range(len(agents)):
         random_argument_index = random.randint(0, len(argument_pool) - 1)
