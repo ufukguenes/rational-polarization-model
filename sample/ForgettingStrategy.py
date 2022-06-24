@@ -147,6 +147,12 @@ def weight_coherence_minded(agent, new_argument, new_argument_index):
 
     kv_arguments = list(agent_copy.items())
 
+    opinion_after = 0
+    for argument in kv_arguments:
+        opinion_after += argument[1]
+
+    opinion_before = opinion_after - new_argument
+
     # find the overall absolut the weakest argument and the corresponding index
     current_weakest = abs(kv_arguments[0][1])
     current_weakest_index = kv_arguments[0][0]
@@ -155,7 +161,7 @@ def weight_coherence_minded(agent, new_argument, new_argument_index):
             current_weakest = abs(kv_arguments[i][1])
             current_weakest_index = kv_arguments[i][0]
 
-    if current_weakest_index == new_argument_index:
+    if opinion_before * opinion_after < 0:
         return coherence_minded(agent, new_argument, new_argument_index)
     else:
         return weight_minded(agent, new_argument, new_argument_index)
