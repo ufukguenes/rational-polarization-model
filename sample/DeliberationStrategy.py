@@ -67,7 +67,7 @@ def rational_deliberation(agents, argument_pool, forgetting_strategy):
 
     agents_with_opposite_view = list(filter(lambda a: np.average(list(a.values()))*random_agent_opinion < 0, agents))
     if len(agents_with_opposite_view) == 0:
-        return agents, argument_pool
+        return pure_deliberation(agents, argument_pool, forgetting_strategy)
 
     current_max_argument_index = -1
     current_max_difference = 0
@@ -91,5 +91,4 @@ def rational_deliberation(agents, argument_pool, forgetting_strategy):
         return_agents.append(forgetting_strategy(agent, argument_pool[current_max_argument_index], current_max_argument_index))
 
     return return_agents, argument_pool
-
 
