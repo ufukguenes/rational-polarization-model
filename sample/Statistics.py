@@ -142,8 +142,4 @@ class Statistics:
         plt.hist(self.average_opinion[max_index], bins=range(lower, upper, width))
         plt.title("Opinions after " + str(self.steps[max_index]) + " steps")
         plt.xlabel("opinion")
-        plt.ylabel("number of agents")
-
-
-    def merge_two_stats(self, stat):
-        return Statistics()
+        plt.ylabel("number of agents" )
