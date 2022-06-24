@@ -4,6 +4,10 @@ call the forgetting strategies
 """
 import random
 
+import numpy as np
+
+import MeasuringMethods as mes
+
 
 def pure_deliberation(agents, argument_pool, forgetting_strategy):
     """
@@ -54,3 +58,38 @@ def outside_deliberation(agents, argument_pool, forgetting_strategy):
     return_agents, argument_pool = pure_deliberation(pure_deliberation_agents, argument_pool, forgetting_strategy)
 
     return return_agents, argument_pool
+
+def rational_deliberation(agents, argument_pool, forgetting_strategy):
+    # pick a random agent
+    random_agent_index = random.randint(0, len(agents) - 1)
+    random_agent_arguments = list(agents[random_agent_index].values())
+    random_agent_opinion = np.average(random_agent_arguments)
+
+    agents_with_opposite_view = list(filter(lambda a: np.average(list(a.values()))*random_agent_opinion < 0, agents))
+    if len(agents_with_opposite_view) == 0:
+        return agents, argument_pool
+
+    current_max_argument_index = -1
+    current_max_difference = 0
+    avg_opinion_before = np.average(mes.get_average_opinions(agents_with_opposite_view))
+    for argument_index in agents[random_agent_index]:
+        current_agents = []
+        if argument_pool[argument_index] * random_agent_opinion < 0:
+            continue
+        for i in range(len(agents_with_opposite_view)):
+            current_agents.append(forgetting_strategy(agents_with_opposite_view[i], argument_pool[argument_index], argument_index))
+        current_avg_opinion = np.average(mes.get_average_opinions(current_agents))
+        if abs(avg_opinion_before - current_avg_opinion) > current_max_difference:
+            current_max_argument_index = argument_index
+            current_max_difference = abs(random_agent_opinion - current_avg_opinion)
+
+    if current_max_argument_index < 0:
+        return agents, argument_pool
+
+    return_agents = []
+    for agent in agents:
+        return_agents.append(forgetting_strategy(agent, argument_pool[current_max_argument_index], current_max_argument_index))
+
+    return return_agents, argument_pool
+
+

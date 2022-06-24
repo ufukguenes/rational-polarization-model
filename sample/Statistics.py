@@ -1,3 +1,5 @@
+import copy
+
 import matplotlib.pyplot as plt
 import numpy as np
 
@@ -51,12 +53,14 @@ class Statistics:
             self.converged_average = True
         elif not self.converged_average:
             self.time_to_polarize_average[0] = current_step
+            self.time_to_polarize_average[1] = 0
 
         if not self.converged_reasons and mes.is_converged_reasons(agents, opinions_by_group, index_by_group):
             self.time_to_polarize_reasons[1] = current_step
             self.converged_reasons = True
         elif not self.converged_reasons:
             self.time_to_polarize_reasons[0] = current_step
+            self.time_to_polarize_reasons[1] = current_step
 
         self.number_of_groups.append(len(opinions_by_group))
 

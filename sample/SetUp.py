@@ -6,18 +6,14 @@ import numpy as np
 
 import Statistics
 
+stats_every_n_steps = 1000
+stats_when_in = [5, 10, 50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900]
 
-def init(number_of_arguments, number_of_agents, size_of_memory, distribution, arguments=[]):
-    # TODO bei unlimeted memory, hat jeder dann alle argumente?
-    '''
-    for k in range(size_of_memory):
-        random_index = random.randint(0, size_of_argument_pool - 1)
-        next_argument = argument_pool[random_index]
-        arguments_of_one.append((random_index, next_argument))
-    '''
+
+def init(number_of_arguments, number_of_agents, size_of_memory, distribution, arguments=None):
 
     # init all the available arguments
-    if len(arguments) == 0:
+    if arguments is None:
         argument_pool = distribution(number_of_arguments)
     else:
         argument_pool = arguments
@@ -56,8 +52,6 @@ def do_n_steps(number_of_steps, argument_pool, agents, forgetting, deliberation)
 
 def standard_set_up(distribution, forgetting, deliberation, max_steps=100000, size_of_argument_pool=500,
                     count_of_agents=50, count_of_memory=7):
-    plot_every_n_steps = 1000
-    plot_when_in = [5, 10, 50, 100, 150, 200, 250, 300, 400, 500, max_steps - 1]
 
     stats = Statistics.Statistics()
 
@@ -66,19 +60,19 @@ def standard_set_up(distribution, forgetting, deliberation, max_steps=100000, si
     stats.calculate(agents_for_next_step, 0)
     stats.create_plot_average_opinion()
     plt.show()
-    break_in_next_test = False
 
+    break_in_next_test = False
     for i in range(max_steps):
         agents_for_next_step, argument_pool = do_n_steps(1, argument_pool, agents_for_next_step, forgetting,
                                                          deliberation)
 
-        if (i + 1) % plot_every_n_steps == 0 or (i + 1) in plot_when_in:
+        if (i + 1) % stats_every_n_steps == 0 or (i + 1) in stats_when_in or i == max_steps - 1:
             stats.calculate(agents_for_next_step, i + 1)
             stats.create_plot_average_opinion()
             plt.show()
+
             if break_in_next_test:
                 break
-
             if stats.has_converged():
                 break_in_next_test = True
             else:
@@ -92,29 +86,28 @@ def standard_set_up(distribution, forgetting, deliberation, max_steps=100000, si
 
 def statistical_set_up(distribution, forgetting, deliberation, max_steps=100000, size_of_argument_pool=500,
                        count_of_agents=50, count_of_memory=7, runs=10):
-    stats_every_n_steps = 1000
-    stats_when_in = [5, 10, 50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, max_steps - 1]
+
     all_stats = []
 
     for k in range(runs):
         print("current run: " + str(k))
-        break_in_next_test = False
         all_stats.append(Statistics.Statistics())
 
         agents_for_next_step, argument_pool = init(size_of_argument_pool, count_of_agents, count_of_memory,
                                                    distribution)
         all_stats[k].calculate(agents_for_next_step, 0)
+
+        break_in_next_test = False
         for i in range(max_steps):
 
             agents_for_next_step, argument_pool = do_n_steps(1, argument_pool, agents_for_next_step, forgetting,
                                                              deliberation)
 
-            if (i + 1) % stats_every_n_steps == 0 or (i + 1) in stats_when_in:
+            if (i + 1) % stats_every_n_steps == 0 or (i + 1) in stats_when_in or i == max_steps - 1:
                 all_stats[k].calculate(agents_for_next_step, i + 1)
 
                 if break_in_next_test:
                     break
-
                 if all_stats[k].has_converged():
                     break_in_next_test = True
                 else:
@@ -127,13 +120,10 @@ def statistical_grouped_group_interaction(distribution, forgetting, deliberation
                                           size_of_argument_pool=500,
                                           count_of_agents=50, count_of_memory=7, runs=10, num_of_groups=5,
                                           talk_show=False, expert_group=False):
-    stats_every_n_steps = 1000
-    stats_when_in = [5, 10, 50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, max_steps - 1]
     all_stats = []
 
     for k in range(runs):
         print("current run: " + str(k))
-        break_in_next_test = False
         all_groups = []
         all_argument_pools = []
         current_stat = []
@@ -163,13 +153,14 @@ def statistical_grouped_group_interaction(distribution, forgetting, deliberation
             current_agent = all_groups[m]
             current_stat.append(Statistics.Statistics())
             current_stat[m].calculate(current_agent, 0)
+
             break_in_next_test = False
             for i in range(max_steps):
 
                 all_groups[m], all_argument_pools[m] = do_n_steps(1, all_argument_pools[m], all_groups[m], forgetting,
                                                                   deliberation)
 
-                if (i + 1) % stats_every_n_steps == 0 or (i + 1) in stats_when_in:
+                if (i + 1) % stats_every_n_steps == 0 or (i + 1) in stats_when_in or i == max_steps - 1:
                     current_stat[m].calculate(all_groups[m], i + 1)
 
                     if break_in_next_test:
@@ -193,13 +184,14 @@ def statistical_grouped_group_interaction(distribution, forgetting, deliberation
                 for subgroup_index in current_stat[i].index_by_group_per_step[current_stat[i].max_index]:
                     pick_random_agent_index = random.randint(0, len(subgroup_index) - 1)
                     combined_agents.append(all_groups[i][pick_random_agent_index])
+
         break_in_next_test = False
         for i in range(max_steps):
 
             combined_agents, all_argument_pools[m] = do_n_steps(1, all_argument_pools[m], combined_agents, forgetting,
                                                                 deliberation)
 
-            if (i + 1) % stats_every_n_steps == 0 or (i + 1) in stats_when_in:
+            if (i + 1) % stats_every_n_steps == 0 or (i + 1) in stats_when_in or i == max_steps - 1:
                 all_stats[k].calculate(combined_agents, i + 1)
 
                 if break_in_next_test and i > 500:
@@ -258,10 +250,10 @@ def show_stats_end(all_stats, text):
         all_max_step_res += stat.time_to_polarize_reasons[1]
         all_min_step_res += stat.time_to_polarize_reasons[0]
 
-        if stat.time_to_polarize_average[1] == 0:
+        if not stat.converged_average:
             relative_number_of_converged_runs_avg -= 1
 
-        if stat.time_to_polarize_reasons[1] == 0:
+        if not stat.converged_average:
             relative_number_of_converged_runs_res -= 1
 
         if stat.number_of_groups[index] == 1:
