@@ -49,17 +49,10 @@ def outside_deliberation(agents, argument_pool, forgetting_strategy):
     pure_deliberation_agents = []
     for i in range(len(agents)):
         random_argument_index = random.randint(0, len(argument_pool) - 1)
-        pure_deliberation_agents.append(forgetting_strategy(agents[i], argument_pool[random_argument_index], random_argument_index))
+        pure_deliberation_agents.append(
+            forgetting_strategy(agents[i], argument_pool[random_argument_index], random_argument_index))
 
     # second pure deliberation is applied
     return_agents, argument_pool = pure_deliberation(pure_deliberation_agents, argument_pool, forgetting_strategy)
 
     return return_agents, argument_pool
-
-    '''
-    wenn ein agent eine argument bekommt, dass er noch nicht kennt, erhöht sich die anzahl seiner argumente.
-    wenn er dann weiter zu pure deliberation gegeben wird, wird dieser auch wieder mit der erhöten anzhal an
-    argumenten zurückgegeben und hatte im pure deliberation step zwei argumente mehr als am anfang
-    oder muss ih die vergessens strategie zweimal anwenden bei outside deliberation
-    wenn es zweimal angewendet wird, wass wenn man dann unterschiedliche strategien verwendet
-    '''
