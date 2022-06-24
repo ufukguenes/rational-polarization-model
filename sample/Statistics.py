@@ -60,7 +60,7 @@ class Statistics:
             self.converged_reasons = True
         elif not self.converged_reasons:
             self.time_to_polarize_reasons[0] = current_step
-            self.time_to_polarize_reasons[1] = current_step
+            self.time_to_polarize_reasons[1] = 0
 
         self.number_of_groups.append(len(opinions_by_group))
 

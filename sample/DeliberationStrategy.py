@@ -92,3 +92,20 @@ def rational_deliberation(agents, argument_pool, forgetting_strategy):
 
     return return_agents, argument_pool
 
+def rational_deliberation_simple(agents, argument_pool, forgetting_strategy):
+    # pick a random agent
+    random_agent_index = random.randint(0, len(agents) - 1)
+    random_agent_arguments = list(agents[random_agent_index].values())
+    random_agent_opinion = np.average(random_agent_arguments)
+
+    current_max_index = 0
+    for opinion in agents[random_agent_index]:
+        if argument_pool[opinion] * random_agent_opinion > 0 and abs(argument_pool[current_max_index]) < abs(argument_pool[opinion]):
+            current_max_index = opinion
+
+    return_agents = []
+    # apply the forgetting strategy on each agent with the random argument
+    for agent in agents:
+        return_agents.append(forgetting_strategy(agent, argument_pool[current_max_index], current_max_index))
+
+    return return_agents, argument_pool
