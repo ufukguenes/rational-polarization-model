@@ -8,10 +8,10 @@ import warnings
 if __name__ == '__main__':
     warnings.simplefilter("error")
     start = datetime.now()
-    su.standard_set_up(argp.exponential_distribution_pool, forg.coherence_minded, delib.rational_deliberation_simple, max_steps=10000)
+    #su.standard_set_up(argp.exponential_distribution_pool, forg.coherence_minded, delib.rational_deliberation, max_steps=10000)
 
-    # su.statistical_set_up(argp.exponential_distribution_pool, forg.coherence_minded,
-    #                                       delib.pure_deliberation, runs=100)
+    su.statistical_set_up(argp.exponential_distribution_pool, forg.coherence_minded,
+                                           delib.rational_deliberation, runs=10)
 
     #su.statistical_grouped_group_interaction(argp.exponential_distribution_pool, forg.coherence_minded,
      #                                        delib.pure_deliberation,

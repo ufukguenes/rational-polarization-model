@@ -99,12 +99,12 @@ class Statistics:
             else:
                 prev_dif_zero = i
                 next_dif_zero = i
-                while (self.subgroup_divergence[prev_dif_zero] == 0):
+                while self.subgroup_divergence[prev_dif_zero] == 0:
                     prev_dif_zero -= 1
                     if prev_dif_zero <= 0:
                         prev_dif_zero = 0
                         break
-                while (self.subgroup_divergence[next_dif_zero] == 0):
+                while self.subgroup_divergence[next_dif_zero] == 0:
                     next_dif_zero += 1
                     if next_dif_zero >= self.max_index:
                         next_dif_zero = self.max_index

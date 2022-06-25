@@ -92,6 +92,7 @@ def rational_deliberation(agents, argument_pool, forgetting_strategy):
 
     return return_agents, argument_pool
 
+
 def rational_deliberation_simple(agents, argument_pool, forgetting_strategy):
     # pick a random agent
     random_agent_index = random.randint(0, len(agents) - 1)
