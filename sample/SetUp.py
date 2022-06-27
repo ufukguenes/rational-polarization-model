@@ -7,7 +7,7 @@ import numpy as np
 import Statistics
 
 stats_every_n_steps = 1000
-stats_when_in = [5, 10, 50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900]
+stats_when_in = [5, 10, 50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000]
 
 
 def init(number_of_arguments, number_of_agents, size_of_memory, distribution, arguments=None):
@@ -162,7 +162,8 @@ def statistical_grouped_group_interaction(distribution, forgetting, deliberation
 
                 if (i + 1) % stats_every_n_steps == 0 or (i + 1) in stats_when_in or i == max_steps - 1:
                     current_stat[m].calculate(all_groups[m], i + 1)
-
+                    #current_stat[m].create_plot_average_opinion()
+                    #plt.show()
                     if break_in_next_test:
                         break
 
@@ -187,13 +188,18 @@ def statistical_grouped_group_interaction(distribution, forgetting, deliberation
 
         break_in_next_test = False
         for i in range(max_steps):
+            if i == 0:
+                all_stats[k].calculate(combined_agents, 0)
+                #all_stats[k].create_plot_average_opinion()
+                #plt.show()
 
             combined_agents, all_argument_pools[m] = do_n_steps(1, all_argument_pools[m], combined_agents, forgetting,
                                                                 deliberation)
 
             if (i + 1) % stats_every_n_steps == 0 or (i + 1) in stats_when_in or i == max_steps - 1:
                 all_stats[k].calculate(combined_agents, i + 1)
-
+                #all_stats[k].create_plot_average_opinion()
+                #plt.show()
                 if break_in_next_test and i > 500:
                     break
 
