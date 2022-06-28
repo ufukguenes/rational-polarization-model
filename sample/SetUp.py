@@ -11,6 +11,16 @@ stats_when_in = [5, 10, 50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 90
 
 
 def init(number_of_arguments, number_of_agents, size_of_memory, distribution, arguments=None):
+    """
+    initialize a run
+    :param number_of_arguments: the number of arguments to create
+    :param number_of_agents: the number of agents to create
+    :param size_of_memory: the size of the memory for each agent
+    :param distribution: the distribution from which to draw the arguments
+    :param arguments: if arguments is a list of numbers, these numbers will be used as arguments instead of creating
+                        new ones
+    :return the created agents, the created arguments
+    """
 
     # init all the available arguments
     if arguments is None:
@@ -41,6 +51,14 @@ def init(number_of_arguments, number_of_agents, size_of_memory, distribution, ar
 
 
 def do_n_steps(number_of_steps, argument_pool, agents, forgetting, deliberation):
+    """
+    do n steps of the model
+    :param number_of_steps: number of steps to take
+    :param argument_pool: the pool of all arguments
+    :param agents: the agents for which the model should do the steps
+    :param forgetting: the forgetting strategy to use
+    :param deliberation: the deliberation strategy to use
+    """
     # je ein Schritt der Simulation
     agents_for_next_step = agents
     for i in range(number_of_steps):
@@ -212,6 +230,11 @@ def statistical_grouped_group_interaction(distribution, forgetting, deliberation
 
 
 def show_stats_end(all_stats, text):
+    """
+    show stats for all of the statistic objects in the list, will show plots and give command line output
+    :param all_stats: list of statistic objects for different runs of the model
+    :param text: text to print out in the command line
+    """
     print(text)
 
     # nur Statistiken zum anzeigen

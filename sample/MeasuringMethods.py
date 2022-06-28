@@ -7,6 +7,10 @@ import numpy as np
 
 # is stable/ order of indices won't change
 def get_average_opinions(agents):
+    """
+    :param agents: the agents to get the opinion from
+    return the opinion from each agent
+    """
     opinions = []
     for arguments in agents:
         all_values = list(arguments.values())
@@ -18,8 +22,7 @@ def get_average_opinions(agents):
 def find_max_index(values):
     """
     finds the indices of the maxima in the given list
-
-    :@param values: list in which maxima shall be found
+    :param values: list in which maxima shall be found
     :return: list of indices
     """
 
@@ -38,9 +41,8 @@ def get_groups(opinions, group_range=7):
     """
     berechnet die gruppen basierend auf maxima. Um ein Maxima werden alle elemente innerhalb der group range zu
     einer Gruppe zusammen gelegt
-
-    :@param opinions: die daten, die grupiert werden sollen
-    :@param group_range: die Weite mit der jede Gruppe gebildet werden soll
+    :param opinions: die daten, die grupiert werden sollen
+    :param group_range: die Weite mit der jede Gruppe gebildet werden soll
     :return: Gruppierung nach Meinung und Gruppierung nach Index
     """
 
@@ -92,8 +94,7 @@ def subgroup_divergence_for_two_groups(opinions_by_group):
     """
     calculates subgroup divergence by assuming there are exactly two groups and calculating the difference in their
     average opinion
-
-    :@param opinions_by_group: the opinions of agents grouped
+    :param opinions_by_group: the opinions of agents grouped
     :return: difference from average opinions
     """
 
@@ -109,8 +110,7 @@ def subgroup_divergence_for_two_groups(opinions_by_group):
 def subgroup_consensus(opinions_by_group):
     """
     calculates subgroup consensus by calculating the standard deviation of opinions per group
-
-    :@param opinions_by_group: the opinions of agents grouped
+    :param opinions_by_group: the opinions of agents grouped
     :return: a list of std for each group by opinion
     """
 
@@ -124,8 +124,7 @@ def subgroup_consensus(opinions_by_group):
 def relative_subgroup_size(opinions_by_group):
     """
     calculates the subgroup size
-
-    :@param opinions_by_group: the opinions of agents grouped
+    :param opinions_by_group: the opinions of agents grouped
     :return: size of each subgroup
     """
 
@@ -139,9 +138,8 @@ def relative_subgroup_size(opinions_by_group):
 def is_converged_average(opinions_by_group, epsilon=0.00001):
     """
     tests if a group is converged by comparing their average opinions for each group
-
-    :@param opinions_by_group: the opinions of agents grouped
-    :@param epsilon: the tolerance for comparing floats
+    :param opinions_by_group: the opinions of agents grouped
+    :param epsilon: the tolerance for comparing floats
     :return: true if converged, otherwise false
     """
     for i in range(len(opinions_by_group)):
@@ -156,10 +154,9 @@ def is_converged_average(opinions_by_group, epsilon=0.00001):
 def is_converged_reasons(agents, opinions_by_group, index_by_group):
     """
     tests if a group is converged by comparing their reasons for each group
-
-    :@param agents: the agents to be tested on
-    :@param opinions_by_group: the opinions of agents grouped
-    :@param index_by_group: the indices of agents grouped
+    :param agents: the agents to be tested on
+    :param opinions_by_group: the opinions of agents grouped
+    :param index_by_group: the indices of agents grouped
     :return: true if converged, otherwise false
     """
 

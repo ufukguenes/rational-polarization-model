@@ -12,7 +12,6 @@ import MeasuringMethods as mes
 def pure_deliberation(agents, argument_pool, forgetting_strategy):
     """
     group interaction method based on pure deliberation
-
     :param agents: the agents which are together in a discussion
     :param argument_pool: the pool of arguments from which an outside argument will be chosen
     :param forgetting_strategy: the strategy which will be used for forgetting
@@ -40,7 +39,6 @@ def pure_deliberation(agents, argument_pool, forgetting_strategy):
 def outside_deliberation(agents, argument_pool, forgetting_strategy):
     """
     group interaction method based on outside deliberation
-
     :param agents: the agents which are together in a discussion
     :param argument_pool: the pool of arguments from which an outside argument will be chosen
     :param forgetting_strategy: the strategy which will be used for forgetting
@@ -60,6 +58,14 @@ def outside_deliberation(agents, argument_pool, forgetting_strategy):
     return return_agents, argument_pool
 
 def rational_deliberation(agents, argument_pool, forgetting_strategy):
+    """
+    group interaction method based on rational deliberation
+    agents share an argument which convinces most of the agents with the opposite opinion
+    :param agents: the agents which are together in a discussion
+    :param argument_pool: the pool of arguments from which an outside argument will be chosen
+    :param forgetting_strategy: the strategy which will be used for forgetting
+    :return: new agents and the same argument pool
+    """
     # pick a random agent
     random_agent_index = random.randint(0, len(agents) - 1)
     random_agent_arguments = list(agents[random_agent_index].values())
@@ -94,6 +100,14 @@ def rational_deliberation(agents, argument_pool, forgetting_strategy):
 
 
 def rational_deliberation_simple(agents, argument_pool, forgetting_strategy):
+    """
+    group interaction method based on simple rational deliberation
+    agents share their strongest argument for the opinion they currently have
+    :param agents: the agents which are together in a discussion
+    :param argument_pool: the pool of arguments from which an outside argument will be chosen
+    :param forgetting_strategy: the strategy which will be used for forgetting
+    :return: new agents and the same argument pool
+    """
     # pick a random agent
     random_agent_index = random.randint(0, len(agents) - 1)
     random_agent_arguments = list(agents[random_agent_index].values())

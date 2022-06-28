@@ -1,4 +1,6 @@
-import copy
+"""
+Class which holds statistical results/ mesures for a group of agents over number of steps
+"""
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -37,6 +39,13 @@ class Statistics:
         self.converged_reasons = False
 
     def calculate(self, agents, current_step):
+        """
+        calculates a new data point for the set of agents at a current step
+
+        :@param agents: the agents for which the calculations will be done
+        :@param current_step: the current iteration of the model. Is needed to correctly plot the data and see the
+                                development of the agents over time
+        """
         self.average_opinion.append(mes.get_average_opinions(agents))
         last_index = len(self.average_opinion) - 1
         opinions_by_group, index_by_group = mes.get_groups(self.average_opinion[last_index])
@@ -67,9 +76,15 @@ class Statistics:
         self.max_index = len(self.steps) - 1
 
     def has_converged(self):
+        """
+        :@return: True if each group of the model has converged on their average opinions and on the reasons
+        """
         return self.converged_average and self.converged_reasons
 
     def create_plot_general_stats(self):
+        """
+        creates plots for subgroup consensus, subgroup divergence, number of groups for the available data
+        """
         if self.max_index < 0:
             return
         print("polarized by average / by reasons: " + str(self.converged_average) + " / " + str(self.converged_reasons))
@@ -85,12 +100,18 @@ class Statistics:
         plt.legend(bbox_to_anchor=(1, 1))
 
     def plot_subgroup_consensus(self):
+        """
+        creates plot for subgroup consensus
+        """
         subgroup_consensus_avg = list(map(np.average, self.subgroup_consensus))
         plt.plot(self.steps, subgroup_consensus_avg, marker="o")
         plt.title("Subgroup consensus")
         plt.xlabel("num of steps")
 
     def create_plot_subgroup_divergence(self):
+        """
+        creates plot for subgroup divergence
+        """
         sub_sub = []
         sub_sub.append(self.subgroup_divergence[0])
         for i in range(1, len(self.subgroup_divergence)-1):
@@ -118,11 +139,17 @@ class Statistics:
         plt.xlabel("num of steps")
 
     def create_plot_number_of_groups(self):
+        """
+        creates plot for number of groups
+        """
         plt.plot(self.steps, self.number_of_groups, marker="o")
         plt.title("Number of Groups")
         plt.xlabel("num of steps")
 
     def create_plot_relative_group_size(self):
+        """
+        creates plot for relative group size
+        """
         max_num_of_groups = max(map(len, self.relative_subgroup_size))
         for i in range(len(self.relative_subgroup_size)):
             while len(self.relative_subgroup_size[i]) < max_num_of_groups:
@@ -135,6 +162,9 @@ class Statistics:
         plt.title("Relative subgroup size")
 
     def create_plot_average_opinion(self):
+        """
+        creates plot (histogram) for the distribution of the average opinion
+        """
         if self.max_index < 0:
             return
         max_index = self.max_index

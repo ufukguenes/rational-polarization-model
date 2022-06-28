@@ -6,6 +6,13 @@ import random
 
 
 def unlimited_minded(agent, new_argument, new_argument_index):
+    """
+    unlimited minded forgetting-strategy
+    :param agent: agent on which the forgetting strategy will be applied
+    :param new_argument: the argument the agent will receive
+    :param new_argument_index: the index of the argument in the argument pool, must be known
+    :return: the new updated agent, no site effects
+    """
     agent_copy = copy.copy(agent)
 
     agent_copy.update({new_argument_index: new_argument})
@@ -16,11 +23,10 @@ def unlimited_minded(agent, new_argument, new_argument_index):
 def simple_minded(agent, new_argument, new_argument_index):
     """
     simple minded forgetting-strategy
-
     :param agent: agent on which the forgetting strategy will be applied
     :param new_argument: the argument the agent will receive
     :param new_argument_index: the index of the argument in the argument pool, must be known
-    :return: no returns, just side effects
+    :return: the new updated agent, no site effects
     """
 
     agent_copy = copy.copy(agent)
@@ -43,11 +49,10 @@ def simple_minded(agent, new_argument, new_argument_index):
 def weight_minded(agent, new_argument, new_argument_index):
     """
     weight minded forgetting-strategy
-
     :param agent: agent on which the forgetting strategy will be applied
     :param new_argument: the argument the agent will receive
     :param new_argument_index: the index of the argument in the argument pool, must be known
-    :return: no returns, just side effects
+    :return: the new updated agent, no site effects
     """
 
     agent_copy = copy.copy(agent)
@@ -69,7 +74,7 @@ def weight_minded(agent, new_argument, new_argument_index):
             current_weakest = abs(kv_arguments[i][1])
             current_weakest_index = kv_arguments[i][0]
 
-    # remove the index, argument pair from the memory
+    # remove the index, argument pa    :return: no returns, just side effectsir from the memory
     agent_copy.pop(current_weakest_index)
 
     return agent_copy
@@ -78,11 +83,10 @@ def weight_minded(agent, new_argument, new_argument_index):
 def coherence_minded(agent, new_argument, new_argument_index):
     """
     coherence minded forgetting-strategy
-
     :param agent: agent on which the forgetting strategy will be applied
     :param new_argument: the argument the agent will receive
     :param new_argument_index: the index of the argument in the argument pool, must be known
-    :return: no returns, just side effects
+    :return: the new updated agent, no site effects
     """
 
     agent_copy = copy.copy(agent)
@@ -137,6 +141,14 @@ def coherence_minded(agent, new_argument, new_argument_index):
 
 
 def weight_coherence_minded(agent, new_argument, new_argument_index):
+    """
+    only use coherence minded strategy in the special case of agent Ada
+    :param agent: agent on which the forgetting strategy will be applied
+    :param new_argument: the argument the agent will receive
+    :param new_argument_index: the index of the argument in the argument pool, must be known
+    :return: the new updated agent, no site effects
+    """
+
     agent_copy = copy.copy(agent)
 
     length_before = len(agent_copy)

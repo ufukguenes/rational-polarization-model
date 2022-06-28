@@ -8,7 +8,6 @@ import numpy as np
 def exponential_distribution_pool(number_of_arguments, scale_parameter=1):
     """
     distribution for the weights of the arguments in the pool
-
     :param scale_parameter: scale parameter = 1 / rate parameter = 1/lambda, mean = 1/ lambda
     :param number_of_arguments: number of arguments that will be generated
     :return: a pool of exponentialy distributed values/ argument-weights
