@@ -3,10 +3,8 @@ import ForgettingStrategy as forg
 import DeliberationStrategy as delib
 import ArgumentPoolInitialisationStrategy as argp
 from datetime import datetime
-import warnings
 
 if __name__ == '__main__':
-    warnings.simplefilter("error")
     start = datetime.now()
     #su.standard_set_up(argp.exponential_distribution_pool, forg.coherence_minded, delib.rational_deliberation_simple, max_steps=5000)
 
