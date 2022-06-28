@@ -1,4 +1,5 @@
-weight_minded, outside_deliberation, 
+#### weight_minded, outside_deliberation, 
+
 exponential_distribution, runs=10, max_steps=100000, size_of_argument_pool=500, count_of_agents=50, count_of_memory=7:
 
 Results of Statistical run
@@ -14,7 +15,10 @@ relative number of runs which ended in two groups, in %: 4.7
 relative number of runs which ended in more then two groups, in %: 0.0
 process finished in: 0:00:41.022075
 
-weight_coherence_minded, outside_deliberation, 
+
+
+#### weight_coherence_minded, outside_deliberation, 
+
 exponential_distribution, runs=10, max_steps=100000, size_of_argument_pool=500, count_of_agents=50, count_of_memory=7:
 
 Results of Statistical run
@@ -30,7 +34,10 @@ relative number of runs which ended in two groups, in %: 11.4
 relative number of runs which ended in more then two groups, in %: 1.2
 process finished in: 0:01:11.366531
 
-coherence_minded, pure_deliberation, 
+
+
+#### coherence_minded, pure_deliberation, 
+
 exponential_distribution, runs=10, max_steps=100000, size_of_argument_pool=500, count_of_agents=50, count_of_memory=7:
 
 Results of Statistical run
@@ -48,7 +55,7 @@ process finished in: 0:02:11.056984
 
 
 
-coherence_minded, outside_deliberation, 
+#### coherence_minded, outside_deliberation, 
 exponential_distribution, runs=10, max_steps=100000, size_of_argument_pool=500, count_of_agents=50, count_of_memory=7:
 
 Results of Statistical run
@@ -66,7 +73,7 @@ process finished in: 0:01:40.804763
 
 
 
-coherence_minded, rational_deliberation, 
+#### coherence_minded, rational_deliberation, 
 exponential_distribution, runs=10, max_steps=100000, size_of_argument_pool=500, count_of_agents=50, count_of_memory=7:
 
 Results of Statistical run
@@ -84,7 +91,7 @@ process finished in: 0:11:53.212956
 
 
 
-coherence_minded, rational_deliberation_simple, 
+#### coherence_minded, rational_deliberation_simple, 
 exponential_distribution, runs=10, max_steps=5000, size_of_argument_pool=500, count_of_agents=50, count_of_memory=7:
 
 Results of Statistical run
@@ -102,8 +109,7 @@ process finished in: 0:05:04.532750
 
 
 
-grouped,  no experts, no talk show
-coherence_minded, outside_deliberation, 
+#### grouped,  no experts, no talk show, coherence_minded, outside_deliberation, 
 exponential_distribution, runs=10, max_steps=5000, size_of_argument_pool=500, count_of_agents=50, count_of_memory=7:
 
 Stats at end of grouped interaction
@@ -121,8 +127,7 @@ process finished in: 0:00:15.863922
 
 
 
-grouped,  experts, no talk show
-coherence_minded, outside_deliberation, 
+#### grouped,  experts, no talk show, coherence_minded, outside_deliberation, 
 exponential_distribution, runs=10, max_steps=5000, size_of_argument_pool=500, count_of_agents=50, count_of_memory=7:
 
 Stats at end of grouped interaction
@@ -140,8 +145,7 @@ process finished in: 0:02:24.842648
 
 
 
-grouped,  no experts, talk show
-coherence_minded, outside_deliberation, 
+#### grouped,  no experts, talk show, coherence_minded, outside_deliberation, 
 exponential_distribution, runs=10, max_steps=5000, size_of_argument_pool=500, count_of_agents=50, count_of_memory=7:
 
 Stats at end of grouped interaction
@@ -159,8 +163,7 @@ process finished in: 0:00:06.961596
 
 
 
-grouped,  experts, talk show
-coherence_minded, outside_deliberation, 
+#### grouped,  experts, talk show, coherence_minded, outside_deliberation, 
 exponential_distribution, runs=10, max_steps=5000, size_of_argument_pool=500, count_of_agents=50, count_of_memory=7:
 
 Stats at end of grouped interaction
