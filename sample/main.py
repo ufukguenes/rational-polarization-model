@@ -6,7 +6,7 @@ from datetime import datetime
 
 if __name__ == '__main__':
     start = datetime.now()
-    su.standard_set_up(argp.exponential_distribution_pool, forg.coherence_minded, delib.outside_deliberation)
+    su.standard_set_up(argp.gaussian_distribution_pool, forg.coherence_minded, delib.outside_deliberation)
 
     #su.statistical_set_up(argp.exponential_distribution_pool, forg.coherence_minded,
     #                                     delib.outside_deliberation, runs=100)

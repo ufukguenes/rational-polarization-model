@@ -23,3 +23,16 @@ def exponential_distribution_pool(number_of_arguments, scale_parameter=1):
         argument_pool.append(argument)
 
     return argument_pool
+
+
+def gaussian_distribution_pool(number_of_arguments, mean=10, std=100):
+    argument_pool = []
+
+    for i in range(number_of_arguments):
+        argument = 0
+        while argument == 0:  # no argument can be 0
+            argument = np.random.normal(mean, std)
+
+        argument_pool.append(argument)
+
+    return argument_pool
