@@ -4,7 +4,7 @@ import numpy as np
 
 import Statistics
 
-stats_every_n_steps = 1000
+stats_every_n_steps = 10000
 stats_when_in = [5, 10, 50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000]
 
 

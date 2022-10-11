@@ -124,3 +124,27 @@ def rational_deliberation_simple(agents, argument_pool, forgetting_strategy):
         return_agents.append(forgetting_strategy(agent, argument_pool[current_max_index], current_max_index))
 
     return return_agents, argument_pool
+
+def pure_subset_deliberation(agents, argument_pool, forgetting_strategy):
+
+    subset_size = 7
+
+    # pick a random agent
+    random_agent_index = random.randint(0, len(agents) - 1)
+
+    agent_sorted = dict(sorted(agents[random_agent_index].items(), key=lambda item: item[1]))
+
+    # pick a random index and with that an argument of that agent
+    subset_keys = list(agent_sorted.keys())
+
+    random_key_index = random.randint(0, subset_size - 1)
+    random_key = subset_keys[random_key_index]
+    random_argument = agents[random_agent_index].get(random_key)
+
+    return_agents = []
+    # apply the forgetting strategy on each agent with the random argument out of the subset
+    for agent in agents:
+        return_agents.append(forgetting_strategy(agent, random_argument, random_key))
+
+    return return_agents, argument_pool
+
