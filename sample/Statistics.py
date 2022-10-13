@@ -183,7 +183,6 @@ class Statistics:
 
         x_0 = np.zeros(len(self.average_opinion[0]))
         x_n = list(map(lambda agent_n, agent_0: agent_n - agent_0, self.average_opinion[len(self.average_opinion) - 1], self.average_opinion[0]))
-        print(x_n)
         y_0_n = self.average_opinion[0]
 
         x = list(chain(*[x_0, x_n]))
