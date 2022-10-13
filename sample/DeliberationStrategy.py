@@ -131,8 +131,8 @@ def pure_subset_deliberation(agents, argument_pool, forgetting_strategy):
 
     # pick a random agent
     random_agent_index = random.randint(0, len(agents) - 1)
-
-    agent_sorted = dict(sorted(agents[random_agent_index].items(), key=lambda item: item[1]))
+    args = agents[random_agent_index].items()
+    agent_sorted = dict(sorted(agents[random_agent_index].items(), key=lambda item: abs(item[1]), reverse=True))
 
     # pick a random index and with that an argument of that agent
     subset_keys = list(agent_sorted.keys())

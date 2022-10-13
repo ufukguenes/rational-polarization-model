@@ -4,7 +4,7 @@ import numpy as np
 
 import Statistics
 
-stats_every_n_steps = 10000
+stats_every_n_steps = 1000
 stats_when_in = [5, 10, 50, 100, 150, 200, 250, 300, 400, 500, 600, 700, 800, 900, 1000]
 
 
@@ -100,7 +100,7 @@ def standard_set_up(distribution, forgetting, deliberation, max_steps=100000, si
     plt.show()
 
 
-def statistical_set_up(distribution, forgetting, deliberation, max_steps=100000, size_of_argument_pool=500,
+def statistical_set_up(distribution, forgetting, deliberation, max_steps=50000, size_of_argument_pool=500,
                        count_of_agents=50, count_of_memory=7, runs=10):
 
     all_stats = []

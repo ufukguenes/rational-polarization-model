@@ -87,9 +87,9 @@ class Statistics:
         """
         if self.max_index < 0:
             return
-        print("polarized by average / by reasons: " + str(self.converged_average) + " / " + str(self.converged_reasons))
-        print("Time to polarize average: ", self.time_to_polarize_average)
-        print("Time to polarize reasons: ", self.time_to_polarize_reasons)
+        print("converged by average / by reasons: " + str(self.converged_average) + " / " + str(self.converged_reasons))
+        print("Time to converge average: ", self.time_to_polarize_average)
+        print("Time to converge reasons: ", self.time_to_polarize_reasons)
 
         subgroup_consensus_avg = list(map(np.average, self.subgroup_consensus))
         plt.plot(self.steps, subgroup_consensus_avg, label='average subgroup consensus', marker="o")

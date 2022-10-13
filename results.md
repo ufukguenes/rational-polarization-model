@@ -178,3 +178,21 @@ relative number of runs which ended in one group, in %: 0.0
 relative number of runs which ended in two groups, in %: 100.0
 relative number of runs which ended in more then two groups, in %: 0.0
 process finished in: 0:00:07.094974
+
+
+
+#### unlimited_minded, pure_subset_deliberation
+
+exponential_distribution, runs=100, max_steps=50000, size_of_argument_pool=500, count_of_agents=50, count_of_memory=7, subset_size = 7:
+
+average subgroup divergence: 0.7751060771313135
+average subgroup consensus: 2.3294540600409586
+average subgroup largest size: 48.98
+average time to converge on opinion:  min:50000.0 max: 0.0
+average time to converge on reasons:  min:50000.0 max: 0.0
+relative number of runs which converged on opinions, in %: 0.0
+relative number of runs which converged on reasons, in %: 0.0
+relative number of runs which ended in one group, in %: 87.0
+relative number of runs which ended in two groups, in %: 13.0
+relative number of runs which ended in more then two groups, in %: 0.0
+process finished in: 0:02:42.277183
