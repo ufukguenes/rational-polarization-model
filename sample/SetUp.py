@@ -66,7 +66,7 @@ def do_n_steps(number_of_steps, argument_pool, agents, forgetting, deliberation)
     return agents_for_next_step, argument_pool
 
 
-def standard_set_up(distribution, forgetting, deliberation, max_steps=100000, size_of_argument_pool=500,
+def standard_set_up(distribution, forgetting, deliberation, max_steps=1000, size_of_argument_pool=500,
                     count_of_agents=50, count_of_memory=7):
 
     stats = Statistics.Statistics()
@@ -97,6 +97,8 @@ def standard_set_up(distribution, forgetting, deliberation, max_steps=100000, si
     stats.create_plot_general_stats()
     plt.show()
     stats.create_plot_relative_group_size()
+    plt.show()
+    stats.create_2d_change_plot()
     plt.show()
 
 

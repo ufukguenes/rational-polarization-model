@@ -1,6 +1,7 @@
 """
 Class which holds statistical results/ mesures for a group of agents over number of steps
 """
+from itertools import chain
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -114,7 +115,7 @@ class Statistics:
         """
         sub_sub = []
         sub_sub.append(self.subgroup_divergence[0])
-        for i in range(1, len(self.subgroup_divergence)-1):
+        for i in range(1, len(self.subgroup_divergence) - 1):
             if self.subgroup_divergence[i] != 0:
                 sub_sub.append(self.subgroup_divergence[i])
             else:
@@ -177,3 +178,19 @@ class Statistics:
         plt.title("Opinions after " + str(self.steps[max_index]) + " steps")
         plt.xlabel("opinion")
         plt.ylabel("number of agents")
+
+    def create_2d_change_plot(self):
+
+        x_0 = np.zeros(len(self.average_opinion[0]))
+        x_n = list(map(lambda agent_n, agent_0: agent_n - agent_0, self.average_opinion[len(self.average_opinion) - 1], self.average_opinion[0]))
+        print(x_n)
+        y_0_n = self.average_opinion[0]
+
+        x = list(chain(*[x_0, x_n]))
+        y = list(chain(*[y_0_n, y_0_n]))
+        print(x)
+        print(y)
+        plt.scatter(x, y)
+        plt.title("Average opinion change by initial opinion")
+        plt.xlabel("opinion at end")
+        plt.ylabel("opinion at start")
