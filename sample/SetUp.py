@@ -68,7 +68,6 @@ def do_n_steps(number_of_steps, argument_pool, agents, forgetting, deliberation)
 
 def standard_set_up(distribution, forgetting, deliberation, max_steps=1000, size_of_argument_pool=500,
                     count_of_agents=50, count_of_memory=7):
-
     stats = Statistics.Statistics()
 
     agents_for_next_step, argument_pool = init(size_of_argument_pool, count_of_agents, count_of_memory,
@@ -104,7 +103,6 @@ def standard_set_up(distribution, forgetting, deliberation, max_steps=1000, size
 
 def statistical_set_up(distribution, forgetting, deliberation, max_steps=50000, size_of_argument_pool=500,
                        count_of_agents=50, count_of_memory=7, runs=10):
-
     all_stats = []
 
     for k in range(runs):
@@ -132,6 +130,33 @@ def statistical_set_up(distribution, forgetting, deliberation, max_steps=50000, 
                     break_in_next_test = False
 
     show_stats_end(all_stats, "Results of Statistical run")
+
+
+def manim_set_up(distribution, forgetting, deliberation, max_steps=50000, size_of_argument_pool=500,
+                 count_of_agents=50, count_of_memory=7, frame_every_n_steps=1000):
+    stats = Statistics.Statistics(calculate_agents_over_time=True)
+
+    agents_for_next_step, argument_pool = init(size_of_argument_pool, count_of_agents, count_of_memory,
+                                               distribution)
+    stats.calculate(agents_for_next_step, 0)
+
+    break_in_next_test = False
+
+    for i in range(max_steps):
+        agents_for_next_step, argument_pool = do_n_steps(1, argument_pool, agents_for_next_step, forgetting,
+                                                         deliberation)
+
+        if (i + 1) % frame_every_n_steps == 0:
+            stats.calculate(agents_for_next_step, i + 1)
+
+            if break_in_next_test:
+                break
+            if stats.has_converged():
+                break_in_next_test = True
+            else:
+                break_in_next_test = False
+
+    return stats
 
 
 def statistical_grouped_group_interaction(distribution, forgetting, deliberation, max_steps=100000,
@@ -180,8 +205,8 @@ def statistical_grouped_group_interaction(distribution, forgetting, deliberation
 
                 if (i + 1) % stats_every_n_steps == 0 or (i + 1) in stats_when_in or i == max_steps - 1:
                     current_stat[m].calculate(all_groups[m], i + 1)
-                    #current_stat[m].create_plot_average_opinion()
-                    #plt.show()
+                    # current_stat[m].create_plot_average_opinion()
+                    # plt.show()
                     if break_in_next_test:
                         break
 
@@ -208,16 +233,16 @@ def statistical_grouped_group_interaction(distribution, forgetting, deliberation
         for i in range(max_steps):
             if i == 0:
                 all_stats[k].calculate(combined_agents, 0)
-                #all_stats[k].create_plot_average_opinion()
-                #plt.show()
+                # all_stats[k].create_plot_average_opinion()
+                # plt.show()
 
             combined_agents, all_argument_pools[m] = do_n_steps(1, all_argument_pools[m], combined_agents, forgetting,
                                                                 deliberation)
 
             if (i + 1) % stats_every_n_steps == 0 or (i + 1) in stats_when_in or i == max_steps - 1:
                 all_stats[k].calculate(combined_agents, i + 1)
-                #all_stats[k].create_plot_average_opinion()
-                #plt.show()
+                # all_stats[k].create_plot_average_opinion()
+                # plt.show()
                 if break_in_next_test and i > 500:
                     break
 

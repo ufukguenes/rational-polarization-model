@@ -57,6 +57,7 @@ def outside_deliberation(agents, argument_pool, forgetting_strategy):
 
     return return_agents, argument_pool
 
+
 def rational_deliberation(agents, argument_pool, forgetting_strategy):
     """
     group interaction method based on rational deliberation
@@ -71,7 +72,7 @@ def rational_deliberation(agents, argument_pool, forgetting_strategy):
     random_agent_arguments = list(agents[random_agent_index].values())
     random_agent_opinion = np.average(random_agent_arguments)
 
-    agents_with_opposite_view = list(filter(lambda a: np.average(list(a.values()))*random_agent_opinion < 0, agents))
+    agents_with_opposite_view = list(filter(lambda a: np.average(list(a.values())) * random_agent_opinion < 0, agents))
     if len(agents_with_opposite_view) == 0:
         return pure_deliberation(agents, argument_pool, forgetting_strategy)
 
@@ -83,7 +84,8 @@ def rational_deliberation(agents, argument_pool, forgetting_strategy):
         if argument_pool[argument_index] * random_agent_opinion < 0:
             continue
         for i in range(len(agents_with_opposite_view)):
-            current_agents.append(forgetting_strategy(agents_with_opposite_view[i], argument_pool[argument_index], argument_index))
+            current_agents.append(
+                forgetting_strategy(agents_with_opposite_view[i], argument_pool[argument_index], argument_index))
         current_avg_opinion = np.average(mes.get_average_opinions(current_agents))
         if abs(avg_opinion_before - current_avg_opinion) > current_max_difference:
             current_max_argument_index = argument_index
@@ -94,7 +96,8 @@ def rational_deliberation(agents, argument_pool, forgetting_strategy):
 
     return_agents = []
     for agent in agents:
-        return_agents.append(forgetting_strategy(agent, argument_pool[current_max_argument_index], current_max_argument_index))
+        return_agents.append(
+            forgetting_strategy(agent, argument_pool[current_max_argument_index], current_max_argument_index))
 
     return return_agents, argument_pool
 
@@ -115,7 +118,8 @@ def rational_deliberation_simple(agents, argument_pool, forgetting_strategy):
 
     current_max_index = 0
     for opinion in agents[random_agent_index]:
-        if argument_pool[opinion] * random_agent_opinion > 0 and abs(argument_pool[current_max_index]) < abs(argument_pool[opinion]):
+        if argument_pool[opinion] * random_agent_opinion > 0 and abs(argument_pool[current_max_index]) < abs(
+                argument_pool[opinion]):
             current_max_index = opinion
 
     return_agents = []
@@ -125,8 +129,8 @@ def rational_deliberation_simple(agents, argument_pool, forgetting_strategy):
 
     return return_agents, argument_pool
 
-def pure_subset_deliberation(agents, argument_pool, forgetting_strategy):
 
+def pure_subset_deliberation(agents, argument_pool, forgetting_strategy):
     subset_size = 7
 
     # pick a random agent
@@ -147,4 +151,3 @@ def pure_subset_deliberation(agents, argument_pool, forgetting_strategy):
         return_agents.append(forgetting_strategy(agent, random_argument, random_key))
 
     return return_agents, argument_pool
-

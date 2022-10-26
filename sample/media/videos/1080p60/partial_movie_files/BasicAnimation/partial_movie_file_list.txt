@@ -1,0 +1,12 @@
+# This file is used internally by FFMPEG.
+file 'file:C:/Users/Ufuk/Documents/Programming/rational-polarization by Ufuk/sample/media/videos/1080p60/partial_movie_files/BasicAnimation/2724823860_1160467475_223132457.mp4'
+file 'file:C:/Users/Ufuk/Documents/Programming/rational-polarization by Ufuk/sample/media/videos/1080p60/partial_movie_files/BasicAnimation/1164547788_3826750174_1144369874.mp4'
+file 'file:C:/Users/Ufuk/Documents/Programming/rational-polarization by Ufuk/sample/media/videos/1080p60/partial_movie_files/BasicAnimation/1164547788_1894815905_1144369874.mp4'
+file 'file:C:/Users/Ufuk/Documents/Programming/rational-polarization by Ufuk/sample/media/videos/1080p60/partial_movie_files/BasicAnimation/1164547788_4170546579_1144369874.mp4'
+file 'file:C:/Users/Ufuk/Documents/Programming/rational-polarization by Ufuk/sample/media/videos/1080p60/partial_movie_files/BasicAnimation/1164547788_4028658119_1144369874.mp4'
+file 'file:C:/Users/Ufuk/Documents/Programming/rational-polarization by Ufuk/sample/media/videos/1080p60/partial_movie_files/BasicAnimation/1164547788_50096930_1144369874.mp4'
+file 'file:C:/Users/Ufuk/Documents/Programming/rational-polarization by Ufuk/sample/media/videos/1080p60/partial_movie_files/BasicAnimation/1164547788_4289319580_1144369874.mp4'
+file 'file:C:/Users/Ufuk/Documents/Programming/rational-polarization by Ufuk/sample/media/videos/1080p60/partial_movie_files/BasicAnimation/1164547788_555088273_1144369874.mp4'
+file 'file:C:/Users/Ufuk/Documents/Programming/rational-polarization by Ufuk/sample/media/videos/1080p60/partial_movie_files/BasicAnimation/1164547788_94915453_1144369874.mp4'
+file 'file:C:/Users/Ufuk/Documents/Programming/rational-polarization by Ufuk/sample/media/videos/1080p60/partial_movie_files/BasicAnimation/1164547788_3933275215_1144369874.mp4'
+file 'file:C:/Users/Ufuk/Documents/Programming/rational-polarization by Ufuk/sample/media/videos/1080p60/partial_movie_files/BasicAnimation/1164547788_2928101617_1144369874.mp4'

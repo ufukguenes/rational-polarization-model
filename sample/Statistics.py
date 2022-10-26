@@ -13,6 +13,8 @@ class Statistics:
     max_index = -1
     steps = []
     average_opinion = []
+    agents_over_time = []
+    calculate_agents_over_time = False
     opinions_by_group_per_step = []
     index_by_group_per_step = []
     number_of_groups = []
@@ -24,9 +26,11 @@ class Statistics:
     converged_average = False
     converged_reasons = False
 
-    def __init__(self):
+    def __init__(self, calculate_agents_over_time=False):
+        self.calculate_agents_over_time = calculate_agents_over_time
         self.max_index = -1
         self.steps = []
+        self.agents_over_time = []
         self.average_opinion = []
         self.opinions_by_group_per_step = []
         self.index_by_group_per_step = []
@@ -57,6 +61,9 @@ class Statistics:
         self.subgroup_consensus.append(mes.subgroup_consensus(opinions_by_group))
         self.relative_subgroup_size.append(mes.relative_subgroup_size(opinions_by_group))
         self.steps.append(current_step)
+
+        if self.calculate_agents_over_time:
+            self.agents_over_time.append(agents)
 
         if not self.converged_average and mes.is_converged_average(opinions_by_group):
             self.time_to_polarize_average[1] = current_step
