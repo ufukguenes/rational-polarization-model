@@ -17,7 +17,7 @@ if __name__ == '__main__':
     #                                        talk_show=True, expert_group=True, runs=10, max_steps=10000)
 
 
-    #stats_of_run = su.manim_set_up(argp.exponential_distribution_pool, forg.simple_minded, delib.pure_deliberation, frame_every_n_steps=100)
+    stats_of_run = su.manim_set_up(argp.exponential_distribution_pool, forg.simple_minded, delib.pure_deliberation, frame_every_n_steps=100)
 
     mv.visualise(stats_of_run)
 
