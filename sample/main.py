@@ -7,7 +7,7 @@ from datetime import datetime
 
 if __name__ == '__main__':
     start = datetime.now()
-    su.standard_set_up(argp.exponential_distribution_pool, forg.unlimited_minded, delib.pure_subset_deliberation)
+    #su.standard_set_up(argp.exponential_distribution_pool, forg.unlimited_minded, delib.pure_subset_deliberation)
 
     #su.statistical_set_up(argp.exponential_distribution_pool, forg.unlimited_minded,
      #                                    delib.pure_subset_deliberation, runs=100)
@@ -19,7 +19,7 @@ if __name__ == '__main__':
 
     #stats_of_run = su.manim_set_up(argp.exponential_distribution_pool, forg.simple_minded, delib.pure_deliberation, frame_every_n_steps=100)
 
-   # mv.visualise(stats_of_run)
+    mv.visualise(stats_of_run)
 
 
     print("process finished in: " + str(datetime.now() - start))
