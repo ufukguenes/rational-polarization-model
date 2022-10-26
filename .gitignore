@@ -18,7 +18,6 @@ lib/
 lib64/
 parts/
 sdist/
-sample/media/
 var/
 wheels/
 pip-wheel-metadata/
@@ -131,3 +130,7 @@ dmypy.json
 
 #IDE
 .idea
+
+
+#manim
+media
